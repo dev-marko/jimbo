@@ -10,12 +10,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-        working-directory: ./backend
-
       - name: Checkout
         uses: actions/checkout@v2
+        working-directory: ./backend
 
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1
