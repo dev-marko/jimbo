@@ -10,9 +10,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    working-directory: ./backend
 
     steps:
+      working-directory: ./backend
+
       - name: Checkout
         uses: actions/checkout@v2
 
