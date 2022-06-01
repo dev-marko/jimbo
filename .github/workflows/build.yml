@@ -1,0 +1,35 @@
+name: Build the project
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+  workflow_dispatch:
+
+jobs:
+  run_tests_and_lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+        
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.101
+      
+      - name: Change directory to backend folder
+        run: cd backend
+      
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
