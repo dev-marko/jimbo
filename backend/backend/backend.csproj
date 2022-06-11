@@ -13,5 +13,11 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ECommerce\ECommerce.csproj" />
+    <ProjectReference Include="..\Forum\Forum.csproj" />
+    <ProjectReference Include="..\WorkoutPlans\WorkoutPlans.csproj" />
+  </ItemGroup>
+
 
 </Project>
