@@ -63,27 +63,6 @@ namespace Authentication.Repository.Implementations
             var tokenHandler = new JwtSecurityTokenHandler();
 
             return new Tokens { Token = tokenHandler.WriteToken(token) };
-
-            // An alternative way to create a token
-
-            //var tokenHandler = new JwtSecurityTokenHandler();
-            //var tokenKey = Encoding.UTF8.GetBytes(configuration["JWT:Key"]);
-
-            //var tokenDescriptor = new SecurityTokenDescriptor
-            //{
-            //    Subject = new System.Security.Claims.ClaimsIdentity(
-            //            new Claim[]
-            //            {
-            //                new Claim(ClaimTypes.Name, user.Email)
-            //            }
-            //        ),
-            //    Expires = DateTime.UtcNow.AddMinutes(30),
-            //    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature)
-            //};
-
-            //var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            //return new Tokens { Token = tokenHandler.WriteToken(token) };
         }
     }
 }
