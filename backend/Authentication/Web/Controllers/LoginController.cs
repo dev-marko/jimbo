@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Authentication.Web.Controllers
@@ -33,10 +34,10 @@ namespace Authentication.Web.Controllers
             if (user != null)
             {
                 var token = jWTManagerRepository.GenerateToken(user);
-                return Ok(token);
+                return Ok(JsonSerializer.Serialize(new { token = token.Token, username = user.Username }));
             }
 
-            return NotFound("User not found");
+            return NotFound(JsonSerializer.Serialize(new { error = "User not found"}));
         }
     }
 }
