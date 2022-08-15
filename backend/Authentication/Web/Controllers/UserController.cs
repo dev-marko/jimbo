@@ -28,13 +28,13 @@ namespace Authentication.Controllers
             return Ok("Hello you are public user");
         }
 
-        [HttpGet("authed")]
+        [HttpGet("me")]
         [Authorize]
-        public IActionResult AuthenticatedEndpoint()
+        public IActionResult GetCurrentlyLoggedInUser ()
         {
             var currentUser = GetCurrentUser();
 
-            return Ok($"Hello {currentUser.Username}!");
+            return Ok(currentUser);
         }
 
         private User GetCurrentUser()
