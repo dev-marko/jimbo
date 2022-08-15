@@ -28,7 +28,7 @@ namespace Authentication.Controllers
             return Ok("Hello you are public user");
         }
 
-        [HttpGet("logged-in")]
+        [HttpGet("me")]
         [Authorize]
         public IActionResult GetCurrentlyLoggedInUser ()
         {
