@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BC = BCrypt.Net.BCrypt;
 
 namespace Authentication.Repository.Implementations
 {
@@ -63,6 +64,23 @@ namespace Authentication.Repository.Implementations
             }
             entities.Update(entity);
             context.SaveChanges();
+        }
+
+        public bool UserExists(string username, string email)
+        {
+            return (FetchUserByUsername(username) != null) || (FetchUserByEmail(email) != null);
+        }
+
+        public User VerifyUserCredentials(string username, string password)
+        {
+            User user = FetchUserByUsername(username);
+
+            if (user == null || !BC.Verify(password, user.Password))
+            {
+                return null;
+            }
+
+            return user;
         }
     }
 }

@@ -5,11 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Authentication.Repository.Interfaces
+namespace Authentication.Services.Interfaces
 {
-    public interface IJWTManagerRepository
+    public interface IJWTManagerService
     {
-        User Authenticate(UserLoginDTO userLogin);
         Tokens GenerateToken(User user);
     }
 }
