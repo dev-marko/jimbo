@@ -13,7 +13,17 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "baseUrl": "src/",
+    "paths": {
+      "~phaxios": ["phaxios/index.ts"],
+      "~constants/*": ["constants/*"],
+      "~providers/*": ["providers/*"],
+      "~types/*": ["types/*"],
+      "~utils/*": ["utils/*"],
+      "~components/*": ["components/*"],
+      "~providers/*": ["providers/*"],
+    }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
