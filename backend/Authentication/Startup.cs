@@ -17,6 +17,8 @@ using System.Threading.Tasks;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Authentication.Services.Implementations;
+using Authentication.Services.Interfaces;
 
 namespace Authentication
 {
@@ -55,8 +57,11 @@ namespace Authentication
             });
 
             // Repos
-            services.AddScoped<IJWTManagerRepository, JWTManagerRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+
+            // Services
+            services.AddTransient<IJWTManagerService, JWTManagerService>();
+            services.AddTransient<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

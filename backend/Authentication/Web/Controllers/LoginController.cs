@@ -1,5 +1,5 @@
 ﻿using Authentication.Domain.DTO;
-using Authentication.Repository.Interfaces;
+using Authentication.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,23 +17,25 @@ namespace Authentication.Web.Controllers
     public class LoginController : ControllerBase
     {
         private readonly IConfiguration config;
-        private readonly IJWTManagerRepository jWTManagerRepository;
+        private readonly IJWTManagerService jWTManagerService;
+        private readonly IUserService userService;
 
-        public LoginController(IConfiguration config, IJWTManagerRepository jWTManagerRepository)
+        public LoginController(IConfiguration config, IJWTManagerService jWTManagerService, IUserService userService)
         {
             this.config = config;
-            this.jWTManagerRepository = jWTManagerRepository;
+            this.jWTManagerService = jWTManagerService;
+            this.userService = userService;
         }
 
         [HttpPost]
         [AllowAnonymous]
         public IActionResult Login([FromBody] UserLoginDTO userLogin)
         {
-            var user = jWTManagerRepository.Authenticate(userLogin);
+            var user = userService.Authenticate(userLogin);
 
             if (user != null)
             {
-                var token = jWTManagerRepository.GenerateToken(user);
+                var token = jWTManagerService.GenerateToken(user);
                 return Ok(JsonSerializer.Serialize(new { token = token.Token, username = user.Username }));
             }
 

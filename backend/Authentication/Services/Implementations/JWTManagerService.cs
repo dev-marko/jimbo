@@ -1,7 +1,7 @@
 ﻿using Authentication.Context;
 using Authentication.Domain.DTO;
 using Authentication.Domain.Models;
-using Authentication.Repository.Interfaces;
+using Authentication.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -13,24 +13,15 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Authentication.Repository.Implementations
+namespace Authentication.Services.Implementations
 {
-    public class JWTManagerRepository : IJWTManagerRepository
+    public class JWTManagerService : IJWTManagerService
     {
-        private readonly AuthenticationContext context;
-        private readonly DbSet<User> entities;
         private readonly IConfiguration configuration;
 
-        public JWTManagerRepository(AuthenticationContext context, IConfiguration configuration)
+        public JWTManagerService(IConfiguration configuration)
         {
-            this.context = context;
-            this.entities = context.Set<User>();
             this.configuration = configuration;
-        }
-
-        public User Authenticate(UserLoginDTO userLogin)
-        {
-            return entities.SingleOrDefault(i => i.Username == userLogin.Username && i.Password == userLogin.Password);
         }
 
         public Tokens GenerateToken(User user)
