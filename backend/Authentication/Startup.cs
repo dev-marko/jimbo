@@ -35,6 +35,7 @@ namespace Authentication
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddCors();
             services.AddDbContext<AuthenticationContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -58,7 +59,7 @@ namespace Authentication
 
             // Repos
             services.AddScoped<IUserRepository, UserRepository>();
-
+            
             // Services
             services.AddTransient<IJWTManagerService, JWTManagerService>();
             services.AddTransient<IUserService, UserService>();
@@ -70,9 +71,13 @@ namespace Authentication
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseCors(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             }
 
-            app.UseHttpsRedirection();
+            if(!env.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
 
             app.UseRouting();
 

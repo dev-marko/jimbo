@@ -33,13 +33,10 @@ namespace Authentication.Web.Controllers
         {
             var user = userService.Authenticate(userLogin);
 
-            if (user != null)
-            {
-                var token = jWTManagerService.GenerateToken(user);
-                return Ok(JsonSerializer.Serialize(new { token = token.Token, username = user.Username }));
-            }
+            if (user == null) return NotFound(JsonSerializer.Serialize(new { error = "User not found" }));
+            var token = jWTManagerService.GenerateToken(user);
+            return Ok(JsonSerializer.Serialize(new { token = token.Token, username = user.Username }));
 
-            return NotFound(JsonSerializer.Serialize(new { error = "User not found"}));
         }
     }
 }

@@ -4,7 +4,7 @@ const Home = () => {
   return (
     <Box>
       <Heading>
-        Hello world!
+        Hello!
       </Heading>
     </Box>
   )
