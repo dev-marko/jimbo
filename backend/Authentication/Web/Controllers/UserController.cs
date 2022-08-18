@@ -1,5 +1,6 @@
 ﻿using Authentication.Domain.Models;
 using Authentication.Repository.Interfaces;
+using Authentication.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,12 +16,14 @@ namespace Authentication.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        public IUserRepository userRepository { get; set; }
+        public IUserService userService { get; set; }
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserService userService)
         {
-            this.userRepository = userRepository;
+            this.userService = userService;
         }
+
+        // TODO: Edit user properties, forgot password, change email, username etc.
 
         [HttpGet("public")]
         public IActionResult Public()
@@ -37,6 +40,14 @@ namespace Authentication.Controllers
             return Ok(currentUser);
         }
 
+        [HttpGet("{id}")]
+        public IActionResult GetUserByUsername(string username)
+        {
+            var user = userService.FetchUserByUsername(username);
+
+            return Ok(user);
+        }
+
         private User GetCurrentUser()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -44,7 +55,7 @@ namespace Authentication.Controllers
             if (identity != null)
             {
                 var claims = identity.Claims;
-                var currentUser = userRepository.FetchUserByUsername(claims.FirstOrDefault(i => i.Type == ClaimTypes.NameIdentifier)?.Value);
+                var currentUser = userService.FetchUserByUsername(claims.FirstOrDefault(i => i.Type == ClaimTypes.NameIdentifier)?.Value);
                 return currentUser;
             }
 

@@ -25,11 +25,11 @@ namespace Authentication.Services.Implementations
             return userRepository.VerifyUserCredentials(userLoginDTO.Username, userLoginDTO.Password);
         }
 
-        public void CreateUser(User entity)
+        public User CreateUser(User entity)
         {
             string passwordHash = BC.HashPassword(entity.Password);
             entity.Password = passwordHash;
-            userRepository.Insert(entity);
+            return userRepository.Insert(entity);
         }
 
         public void DeleteUser(User entity)
@@ -72,9 +72,9 @@ namespace Authentication.Services.Implementations
             };
         }
 
-        public void UpdateUser(User entity)
+        public User UpdateUser(User entity)
         {
-            throw new NotImplementedException();
+            return userRepository.Update(entity);
         }
 
         public bool UserExists(UserRegisterDTO userRegisterDTO)
