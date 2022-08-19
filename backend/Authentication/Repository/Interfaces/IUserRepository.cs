@@ -13,8 +13,8 @@ namespace Authentication.Repository.Interfaces
         User FetchUserByUsername(string username);
         User VerifyUserCredentials(string username, string password);
         bool UserExists(string username, string email);
-        void Insert(User entity);
-        void Update(User entity);
+        User Insert(User entity);
+        User Update(User entity);
         void Delete(User entity);
     }
 }

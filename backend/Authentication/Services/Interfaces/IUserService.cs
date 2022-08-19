@@ -16,8 +16,8 @@ namespace Authentication.Services.Interfaces
         User Authenticate(UserLoginDTO userLoginDTO);
         UserViewModel Register(UserRegisterDTO userRegisterDTO);
         bool UserExists(UserRegisterDTO userRegisterDTO);
-        void CreateUser(User entity);
-        void UpdateUser(User entity);
+        User CreateUser(User entity);
+        User UpdateUser(User entity);
         void DeleteUser(User entity);
     }
 }

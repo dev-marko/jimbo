@@ -46,24 +46,26 @@ namespace Authentication.Repository.Implementations
             return entities.SingleOrDefault(i => i.Username == username);
         }
 
-        public void Insert(User entity)
+        public User Insert(User entity)
         {
             if (entity == null)
             {
                 throw new ArgumentNullException("entity");
             }
-            entities.Add(entity);
+            var user = entities.Add(entity).Entity;
             context.SaveChanges();
+            return user;
         }
 
-        public void Update(User entity)
+        public User Update(User entity)
         {
             if (entity == null)
             {
                 throw new ArgumentNullException("entity");
             }
-            entities.Update(entity);
+            var user = entities.Update(entity).Entity;
             context.SaveChanges();
+            return user;
         }
 
         public bool UserExists(string username, string email)
