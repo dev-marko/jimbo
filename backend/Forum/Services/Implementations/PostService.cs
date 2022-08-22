@@ -47,14 +47,7 @@ namespace Forum.Services.Implementations
         public List<PostViewModel> FetchPostsForTopic(Guid topicId)
         {
             var topic = topicService.FetchTopicById(topicId);
-            var postViewModels = new List<PostViewModel>();
-
-            foreach(var p in topic.Posts)
-            {
-                postViewModels.Add(FetchPostViewModel(p.Id));
-            }
-
-            return postViewModels;
+            return topic.Posts.Select(p => FetchPostViewModel(p.Id)).ToList();
         }
 
         public PostViewModel FetchPostViewModel(Guid id)

@@ -15,10 +15,11 @@ namespace Forum.Services.Implementations
         private readonly ISubforumService subforumService;
         private readonly IPostService postService;
 
-        public TopicService(ITopicRepository topicRepository, ISubforumService subforumService)
+        public TopicService(ITopicRepository topicRepository, ISubforumService subforumService, IPostService postService)
         {
             this.topicRepository = topicRepository;
             this.subforumService = subforumService;
+            this.postService = postService;
         }
 
         public TopicViewModel CreateTopic(Topic entity)
@@ -46,26 +47,13 @@ namespace Forum.Services.Implementations
         public List<TopicViewModel> FetchTopicsForSubforum(Guid subforumId)
         {
             var topics = subforumService.FetchSubforumById(subforumId).Topics;
-
-            var topicViewModels = new List<TopicViewModel>();
-
-            foreach (var t in topics)
-            {
-                topicViewModels.Add(FetchTopicViewModelWithPosts(t));
-            }
-
-            return topicViewModels;
+            return topics.Select(t => FetchTopicViewModelWithPosts(t)).ToList();
         }
 
         public TopicViewModel FetchTopicViewModelWithPosts(Topic entity)
         {
             var posts = entity.Posts;
-            var postViewModels = new List<PostViewModel>();
-
-            foreach (var p in posts)
-            {
-                postViewModels.Add(postService.FetchPostViewModel(p.Id));
-            }
+            var postViewModels = posts.Select(p => postService.FetchPostViewModel(p.Id)).ToList();
 
             return new TopicViewModel
             {
@@ -96,12 +84,7 @@ namespace Forum.Services.Implementations
         {
             var topic = FetchTopicById(id);
             var posts = topic.Posts;
-            var postViewModels = new List<PostViewModel>();
-
-            foreach (var p in posts)
-            {
-                postViewModels.Add(postService.FetchPostViewModel(p.Id));
-            }
+            var postViewModels = posts.Select(p => postService.FetchPostViewModel(p.Id)).ToList();
 
             return new TopicViewModel
             {

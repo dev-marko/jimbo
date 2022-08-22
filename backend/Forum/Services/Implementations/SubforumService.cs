@@ -64,12 +64,7 @@ namespace Forum.Services.Implementations
         public SubforumViewModel FetchSubforumViewModelWithTopicsById(Guid id)
         {
             var subforum = FetchSubforumById(id);
-            var topics = new List<TopicViewModel>();
-
-            foreach(var t in subforum.Topics)
-            {
-                topics.Add(topicService.FetchTopicViewModelById(t.Id));
-            }
+            var topics = subforum.Topics.Select(t => topicService.FetchTopicViewModelById(t.Id)).ToList();
 
             return new SubforumViewModel
             {
@@ -83,12 +78,7 @@ namespace Forum.Services.Implementations
 
         public SubforumViewModel FetchSubforumViewModelWithTopics(Subforum entity)
         {
-            var topics = new List<TopicViewModel>();
-
-            foreach (var t in entity.Topics)
-            {
-                topics.Add(topicService.FetchTopicViewModelById(t.Id));
-            }
+            var topics = entity.Topics.Select(t => topicService.FetchTopicViewModelById(t.Id)).ToList();
 
             return new SubforumViewModel
             {
