@@ -12,13 +12,13 @@ namespace Forum.Services.Implementations
     public class TopicService : ITopicService
     {
         private readonly ITopicRepository topicRepository;
-        private readonly ISubforumService subforumService;
+        private readonly ISubforumRepository subforumRepository;
         private readonly IPostService postService;
 
-        public TopicService(ITopicRepository topicRepository, ISubforumService subforumService, IPostService postService)
+        public TopicService(ITopicRepository topicRepository, ISubforumRepository subforumRepository, IPostService postService)
         {
             this.topicRepository = topicRepository;
-            this.subforumService = subforumService;
+            this.subforumRepository = subforumRepository;
             this.postService = postService;
         }
 
@@ -46,7 +46,7 @@ namespace Forum.Services.Implementations
 
         public List<TopicViewModel> FetchTopicsForSubforum(Guid subforumId)
         {
-            var topics = subforumService.FetchSubforumById(subforumId).Topics;
+            var topics = subforumRepository.FetchSubforumById(subforumId).Topics;
             return topics.Select(t => FetchTopicViewModelWithPosts(t)).ToList();
         }
 
