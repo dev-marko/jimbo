@@ -41,6 +41,24 @@ namespace Forum
             services.AddDbContext<ForumContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
+            // JWT authentication config
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(o =>
+                {
+                    var key = Encoding.UTF8.GetBytes(Configuration["JWT:Key"]);
+                    o.SaveToken = true;
+                    o.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["JWT:Issuer"],
+                        ValidAudience = Configuration["JWT:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(key)
+                    };
+                });
+
             // Repos
             services.AddScoped<ISubforumRepository, SubforumRepository>();
             services.AddScoped<ITopicRepository, TopicRepository>();
@@ -50,7 +68,6 @@ namespace Forum
             services.AddTransient<ISubforumService, SubforumService>();
             services.AddTransient<ITopicService, TopicService>();
             services.AddTransient<IPostService, PostService>();
-
 
             // Https Clients
             services.AddHttpClient<IUserService, UserService>(c =>
@@ -63,8 +80,6 @@ namespace Forum
                 .AddNewtonsoftJson(options => 
                 options.SerializerSettings.ReferenceLoopHandling = 
                 Newtonsoft.Json.ReferenceLoopHandling.Ignore);
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
