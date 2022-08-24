@@ -13,6 +13,7 @@ namespace Forum.Services.Interfaces
         Topic FetchTopicById(Guid? id);
         TopicViewModel FetchTopicViewModelWithPostsById(Guid id);
         TopicViewModel FetchTopicViewModelWithPosts(Topic entity);
+        TopicViewModel FetchTopicViewModelWithoutPosts(Topic entity);
         TopicViewModel FetchTopicViewModelById(Guid id);
         List<TopicViewModel> FetchTopicsForSubforum(Guid subforumId);
         TopicViewModel CreateTopic(Topic entity);

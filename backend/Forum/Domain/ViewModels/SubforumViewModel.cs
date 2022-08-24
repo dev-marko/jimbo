@@ -11,7 +11,7 @@ namespace Forum.Domain.ViewModels
         public Guid SubforumId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public Categories Category { get; set; }
+        public string Category { get; set; }
         public List<TopicViewModel> Topics { get; set; }
     }
 }

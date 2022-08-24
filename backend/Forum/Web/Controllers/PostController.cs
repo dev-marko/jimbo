@@ -25,7 +25,12 @@ namespace Forum.Web.Controllers
         [HttpGet("{id}")]
         public IActionResult GetPost(Guid id)
         {
-            var postViewModel = postService.FetchPostViewModel(id);
+            if (id == null || !postService.PostExists(id))
+            {
+                return NotFound(JsonSerializer.Serialize(new { error = $"Post with ID: '{id}' not found" }));
+            }
+
+            var postViewModel = postService.FetchPostViewModelById(id);
             return Ok(postViewModel);
         }
 
@@ -48,9 +53,14 @@ namespace Forum.Web.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        //[Authorize]
         public IActionResult DeletePost(Guid id)
         {
+            if (id == null || !postService.PostExists(id))
+            {
+                return NotFound(JsonSerializer.Serialize(new { error = $"Post with ID: '{id}' not found" }));
+            }
+
             var postToDelete = postService.FetchPostById(id);
             var postViewModel = postService.DeletePost(postToDelete);
             return Ok(postViewModel);

@@ -13,25 +13,23 @@ namespace Forum.Services.Implementations
     {
         private readonly IPostRepository postRepository;
         private readonly ITopicRepository topicRepository;
-        private readonly IUserService userService;
 
-        public PostService(IPostRepository postRepository, ITopicRepository topicRepository, IUserService userService)
+        public PostService(IPostRepository postRepository, ITopicRepository topicRepository)
         {
             this.postRepository = postRepository;
             this.topicRepository = topicRepository;
-            this.userService = userService;
         }
 
         public PostViewModel CreatePost(Post entity)
         {
             var post = postRepository.Insert(entity);
-            return FetchPostViewModel(post.Id);
+            return FetchPostViewModelById(post.Id);
         }
 
         public PostViewModel DeletePost(Post entity)
         {
             var post = postRepository.Delete(entity);
-            return FetchPostViewModel(post.Id);
+            return FetchPostViewModel(post);
         }
 
         public List<Post> FetchAllPosts()
@@ -47,10 +45,23 @@ namespace Forum.Services.Implementations
         public List<PostViewModel> FetchPostsForTopic(Guid topicId)
         {
             var topic = topicRepository.FetchTopicById(topicId);
-            return topic.Posts.Select(p => FetchPostViewModel(p.Id)).ToList();
+            return topic.Posts.Select(p => FetchPostViewModelById(p.Id)).ToList();
         }
 
-        public PostViewModel FetchPostViewModel(Guid id)
+        public PostViewModel FetchPostViewModel(Post entity)
+        {
+            return new PostViewModel
+            {
+                PostId = entity.Id,
+                TopicId = entity.TopicId,
+                AuthorUsername = entity.AuthorUsername,
+                Content = entity.Content,
+                CreatedAt = entity.CreatedAt,
+                LastModified = entity.LastModified
+            };
+        }
+
+        public PostViewModel FetchPostViewModelById(Guid id)
         {
             var post = FetchPostById(id);
 
@@ -73,7 +84,7 @@ namespace Forum.Services.Implementations
         public PostViewModel UpdatePost(Post entity)
         {
             var post = postRepository.Update(entity);
-            return FetchPostViewModel(post.Id);
+            return FetchPostViewModelById(post.Id);
         }
     }
 }

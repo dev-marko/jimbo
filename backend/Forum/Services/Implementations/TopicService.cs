@@ -25,7 +25,7 @@ namespace Forum.Services.Implementations
         public TopicViewModel CreateTopic(Topic entity)
         {
             var topic = topicRepository.Insert(entity);
-            return FetchTopicViewModelWithPosts(topic);
+            return FetchTopicViewModelWithoutPosts(topic);
         }
 
         public TopicViewModel DeleteTopic(Topic entity)
@@ -47,13 +47,19 @@ namespace Forum.Services.Implementations
         public List<TopicViewModel> FetchTopicsForSubforum(Guid subforumId)
         {
             var topics = subforumRepository.FetchSubforumById(subforumId).Topics;
-            return topics.Select(t => FetchTopicViewModelWithPosts(t)).ToList();
+
+            if (topics != null)
+            {
+                return topics.Select(t => FetchTopicViewModelWithoutPosts(t)).ToList();
+            }
+
+            return new List<TopicViewModel>();
         }
 
         public TopicViewModel FetchTopicViewModelWithPosts(Topic entity)
         {
             var posts = entity.Posts;
-            var postViewModels = posts.Select(p => postService.FetchPostViewModel(p.Id)).ToList();
+            var postViewModels = posts.Select(p => postService.FetchPostViewModelById(p.Id)).ToList();
 
             return new TopicViewModel
             {
@@ -84,7 +90,7 @@ namespace Forum.Services.Implementations
         {
             var topic = FetchTopicById(id);
             var posts = topic.Posts;
-            var postViewModels = posts.Select(p => postService.FetchPostViewModel(p.Id)).ToList();
+            var postViewModels = posts.Select(p => postService.FetchPostViewModelById(p.Id)).ToList();
 
             return new TopicViewModel
             {
@@ -106,6 +112,19 @@ namespace Forum.Services.Implementations
         {
             var topic = topicRepository.Update(entity);
             return FetchTopicViewModelWithPosts(topic);
+        }
+
+        public TopicViewModel FetchTopicViewModelWithoutPosts(Topic entity)
+        {
+            return new TopicViewModel
+            {
+                TopicId = entity.Id,
+                SubforumId = entity.SubforumId,
+                OwnerUsername = entity.OwnerUsername,
+                Title = entity.Title,
+                CreatedAt = entity.CreatedAt,
+                Posts = new List<PostViewModel>()
+            };
         }
     }
 }

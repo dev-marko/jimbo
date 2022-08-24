@@ -1,4 +1,5 @@
-﻿using Forum.Domain.Models;
+﻿using Forum.Domain.Enumerations;
+using Forum.Domain.Models;
 using Forum.Domain.ViewModels;
 using Forum.Repository.Interfaces;
 using Forum.Services.Interfaces;
@@ -64,28 +65,38 @@ namespace Forum.Services.Implementations
         public SubforumViewModel FetchSubforumViewModelWithTopicsById(Guid id)
         {
             var subforum = FetchSubforumById(id);
-            var topics = subforum.Topics.Select(t => topicService.FetchTopicViewModelById(t.Id)).ToList();
+            List<TopicViewModel> topics = new List<TopicViewModel>();
+
+            if (subforum.Topics != null)
+            {
+                topics = subforum.Topics.Select(t => topicService.FetchTopicViewModelById(t.Id)).ToList();
+            }
 
             return new SubforumViewModel
             {
                 SubforumId = subforum.Id,
                 Name = subforum.Name,
                 Description = subforum.Description,
-                Category = subforum.Category,
+                Category = Enum.GetName(typeof(Categories), subforum.Category),
                 Topics = topics
             };
         }
 
         public SubforumViewModel FetchSubforumViewModelWithTopics(Subforum entity)
         {
-            var topics = entity.Topics.Select(t => topicService.FetchTopicViewModelById(t.Id)).ToList();
+            List<TopicViewModel> topics = new List<TopicViewModel>();
+
+            if (entity.Topics != null)
+            {
+                topics = entity.Topics.Select(t => topicService.FetchTopicViewModelById(t.Id)).ToList();
+            }
 
             return new SubforumViewModel
             {
                 SubforumId = entity.Id,
                 Name = entity.Name,
                 Description = entity.Description,
-                Category = entity.Category,
+                Category = Enum.GetName(typeof(Categories), entity.Category),
                 Topics = topics
             };
         }

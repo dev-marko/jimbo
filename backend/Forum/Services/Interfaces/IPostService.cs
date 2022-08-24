@@ -12,7 +12,8 @@ namespace Forum.Services.Interfaces
         List<Post> FetchAllPosts();
         Post FetchPostById(Guid? id);
         List<PostViewModel> FetchPostsForTopic(Guid topicId);
-        PostViewModel FetchPostViewModel(Guid id);
+        PostViewModel FetchPostViewModelById(Guid id);
+        PostViewModel FetchPostViewModel(Post entity);
         PostViewModel CreatePost(Post entity);
         PostViewModel UpdatePost(Post entity);
         PostViewModel DeletePost(Post entity);

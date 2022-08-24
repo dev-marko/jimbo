@@ -36,20 +36,29 @@ namespace Forum.Controllers
         [HttpGet("sub-forum/{id}")]
         public IActionResult GetSubforum(Guid id)
         {
-            var subforumViewModel = subforumService.FetchSubforumViewModelWithTopicsById(id);
+            if (id == null || !subforumService.SubforumExists(id))
+            {
+                return NotFound(JsonConvert.SerializeObject(new { error = $"Subforum with ID: '{id}' not found" }));
+            }
 
+            var subforumViewModel = subforumService.FetchSubforumViewModelWithTopicsById(id);
             return Ok(subforumViewModel);
         }
 
         [HttpGet("sub-forum/{id}/topics")]
         public IActionResult GetAllTopicsForSubforum(Guid id)
         {
-            var subforum = subforumService.FetchSubforumById(id);
-            return Ok(subforum.Topics.ToList());
+            if (id == null || !subforumService.SubforumExists(id))
+            {
+                return NotFound(JsonConvert.SerializeObject(new { error = $"Subforum with ID: '{id}' not found" }));
+            }
+
+            var topics = topicService.FetchTopicsForSubforum(id);
+            return Ok(JsonConvert.SerializeObject(topics));
         }
 
         [HttpPost("sub-forum")]
-        [Authorize]
+        //[Authorize]
         public IActionResult AddSubforum([FromBody] SubforumDTO subforumDTO)
         {
             Subforum newSubforum = new Subforum
@@ -65,7 +74,7 @@ namespace Forum.Controllers
         }
 
         [HttpPut("sub-forum/{id}")]
-        [Authorize]
+        //[Authorize]
         public IActionResult EditSubforum(Guid id, [FromBody] SubforumDTO subforumDTO)
         {
             if (id == null || !subforumService.SubforumExists(id))
@@ -85,9 +94,14 @@ namespace Forum.Controllers
         }
 
         [HttpDelete("sub-forum/{id}")]
-        [Authorize]
+        //[Authorize]
         public IActionResult DeleteSubforum(Guid id)
         {
+            if (id == null || !subforumService.SubforumExists(id))
+            {
+                return NotFound(JsonConvert.SerializeObject(new { error = $"Subforum with ID: '{id}' not found" }));
+            }
+
             Subforum subforumToDelete = subforumService.FetchSubforumById(id);
             var subforumViewModel = subforumService.DeleteSubforum(subforumToDelete);
 
@@ -97,12 +111,30 @@ namespace Forum.Controllers
         // END-POINT FOR ADDING A NEW POST
 
         [HttpPost("sub-forum/{id}/add-topic")]
-        [Authorize]
+        //[Authorize]
         public IActionResult AddTopicToSubforum(Guid id, [FromBody] TopicDTO topicDTO)
         {
             string token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
-            var loggedInUser = userService.FetchCurrentUser(token).Result;
+
+            if (string.IsNullOrEmpty(token))
+            {
+                return NotFound(JsonConvert.SerializeObject(new { error = "Invalid Bearer Token" }));
+            }
+
+            User loggedInUser = userService.FetchCurrentUser(token).Result;
+
+            if (loggedInUser == null)
+            {
+                return NotFound(JsonConvert.SerializeObject(new { error = "User not found, cannot create topic" }));
+
+            }
+
             var subforum = subforumService.FetchSubforumById(id);
+
+            if (id == null || !subforumService.SubforumExists(id))
+            {
+                return NotFound(JsonConvert.SerializeObject(new { error = $"Subforum with ID: '{id}' not found" }));
+            }
 
             var topic = new Topic
             {
@@ -113,9 +145,9 @@ namespace Forum.Controllers
                 CreatedAt = DateTime.UtcNow
             };
 
-            topicService.CreateTopic(topic);
+            var topicViewModel = topicService.CreateTopic(topic);
 
-            return Ok();
+            return Ok(topicViewModel);
         }
     }
 }

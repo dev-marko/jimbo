@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,10 +32,14 @@ namespace Forum.Web.Controllers
         }
 
         // END-POINTS FOR TOPICS
-
         [HttpGet("{id}")]
         public IActionResult GetTopic(Guid id)
         {
+            if (id == null || !topicService.TopicExists(id))
+            {
+                return NotFound(JsonConvert.SerializeObject(new { error = $"Topic with ID: '{id}' not found" }));
+            }
+
             var topicViewModel = topicService.FetchTopicViewModelWithPostsById(id);
             return Ok(topicViewModel);
         }
@@ -42,6 +47,11 @@ namespace Forum.Web.Controllers
         [HttpGet("{id}/posts")]
         public IActionResult GetPostsForTopic(Guid id)
         {
+            if (id == null || !topicService.TopicExists(id))
+            {
+                return NotFound(JsonConvert.SerializeObject(new { error = $"Topic with ID: '{id}' not found" }));
+            }
+
             var posts = postService.FetchPostsForTopic(id);
             return Ok(posts);
         }
@@ -49,12 +59,12 @@ namespace Forum.Web.Controllers
         // POST METHOD FOR ADDING A NEW TOPIC IS IN THE FORUM CONTROLLER
 
         [HttpPut("{id}")]
-        [Authorize]
+        //[Authorize]
         public IActionResult EditTopic(Guid id, [FromBody] TopicDTO topicDTO)
         {
             if (id == null || !topicService.TopicExists(id))
             {
-                return NotFound(JsonSerializer.Serialize(new { error = $"Topic with ID: '{id}' not found" }));
+                return NotFound(JsonConvert.SerializeObject(new { error = $"Topic with ID: '{id}' not found" }));
             }
 
             var topic = topicService.FetchTopicById(id);
@@ -66,9 +76,14 @@ namespace Forum.Web.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        //[Authorize]
         public IActionResult DeleteTopic(Guid id)
         {
+            if (id == null || !topicService.TopicExists(id))
+            {
+                return NotFound(JsonConvert.SerializeObject(new { error = $"Topic with ID: '{id}' not found" }));
+            }
+
             var topicToDelete = topicService.FetchTopicById(id);
             var topicViewModel = topicService.DeleteTopic(topicToDelete);
             return Ok(topicViewModel);
@@ -77,12 +92,30 @@ namespace Forum.Web.Controllers
         // END-POINTS FOR POSTS
 
         [HttpPost("{id}/add-post")]
-        [Authorize]
+        //[Authorize]
         public IActionResult AddPostToTopic(Guid id, [FromBody] PostDTO postDTO)
         {
             string token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
-            var loggedInUser = userService.FetchCurrentUser(token).Result;
+            
+            if (string.IsNullOrEmpty(token))
+            {
+                return NotFound(JsonConvert.SerializeObject(new { error = "Invalid Bearer Token" }));
+            }
+
+            User loggedInUser = userService.FetchCurrentUser(token).Result;
+
+            if (loggedInUser == null)
+            {
+                return NotFound(JsonConvert.SerializeObject(new { error = "User not found, cannot create topic" }));
+
+            }
+
             var topic = topicService.FetchTopicById(id);
+
+            if (id == null || !topicService.TopicExists(id))
+            {
+                return NotFound(JsonConvert.SerializeObject(new { error = $"Topic with ID: '{id}' not found" }));
+            }
 
             var post = new Post
             {
@@ -94,9 +127,9 @@ namespace Forum.Web.Controllers
                 LastModified = DateTime.UtcNow
             };
 
-            postService.CreatePost(post);
+            var postViewModel = postService.CreatePost(post);
 
-            return Ok();
+            return Ok(postViewModel);
         }
     }
 }
