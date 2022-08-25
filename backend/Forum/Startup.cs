@@ -1,3 +1,4 @@
+using Forum.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,6 +11,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using Forum.Repository.Interfaces;
+using Forum.Repository.Implementations;
+using Forum.Services.Interfaces;
+using Forum.Services.Implementations;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace Forum
 {
@@ -25,7 +36,50 @@ namespace Forum
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
             services.AddControllers();
+            services.AddDbContext<ForumContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+
+            // JWT authentication config
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(o =>
+                {
+                    var key = Encoding.UTF8.GetBytes(Configuration["JWT:Key"]);
+                    o.SaveToken = true;
+                    o.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["JWT:Issuer"],
+                        ValidAudience = Configuration["JWT:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(key)
+                    };
+                });
+
+            // Repos
+            services.AddScoped<ISubforumRepository, SubforumRepository>();
+            services.AddScoped<ITopicRepository, TopicRepository>();
+            services.AddScoped<IPostRepository, PostRepository>();
+
+            // Services
+            services.AddTransient<ISubforumService, SubforumService>();
+            services.AddTransient<ITopicService, TopicService>();
+            services.AddTransient<IPostService, PostService>();
+
+            // Https Clients
+            services.AddHttpClient<IUserService, UserService>(c =>
+            {
+                c.BaseAddress = new Uri("https://localhost:44305/api/user/");
+            });
+
+            // JSON config
+            services.AddControllers()
+                .AddNewtonsoftJson(options => 
+                options.SerializerSettings.ReferenceLoopHandling = 
+                Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,9 +90,14 @@ namespace Forum
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            if (!env.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
