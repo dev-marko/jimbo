@@ -37,7 +37,7 @@ namespace Forum.Web.Controllers
         {
             if (id == null || !topicService.TopicExists(id))
             {
-                return NotFound(JsonConvert.SerializeObject(new { error = $"Topic with ID: '{id}' not found" }));
+                return NotFound(new { error = $"Topic with ID: '{id}' not found" });
             }
 
             var topicViewModel = topicService.FetchTopicViewModelWithPostsById(id);
@@ -49,7 +49,7 @@ namespace Forum.Web.Controllers
         {
             if (id == null || !topicService.TopicExists(id))
             {
-                return NotFound(JsonConvert.SerializeObject(new { error = $"Topic with ID: '{id}' not found" }));
+                return NotFound(new { error = $"Topic with ID: '{id}' not found" });
             }
 
             var posts = postService.FetchPostsForTopic(id);
@@ -64,7 +64,7 @@ namespace Forum.Web.Controllers
         {
             if (id == null || !topicService.TopicExists(id))
             {
-                return NotFound(JsonConvert.SerializeObject(new { error = $"Topic with ID: '{id}' not found" }));
+                return NotFound(new { error = $"Topic with ID: '{id}' not found" });
             }
 
             var topic = topicService.FetchTopicById(id);
@@ -81,7 +81,7 @@ namespace Forum.Web.Controllers
         {
             if (id == null || !topicService.TopicExists(id))
             {
-                return NotFound(JsonConvert.SerializeObject(new { error = $"Topic with ID: '{id}' not found" }));
+                return NotFound(new { error = $"Topic with ID: '{id}' not found" });
             }
 
             var topicToDelete = topicService.FetchTopicById(id);
@@ -99,14 +99,14 @@ namespace Forum.Web.Controllers
             
             if (string.IsNullOrEmpty(token))
             {
-                return NotFound(JsonConvert.SerializeObject(new { error = "Invalid Bearer Token" }));
+                return NotFound(new { error = "Invalid Bearer Token" });
             }
 
             User loggedInUser = userService.FetchCurrentUser(token).Result;
 
             if (loggedInUser == null)
             {
-                return NotFound(JsonConvert.SerializeObject(new { error = "User not found, cannot create topic" }));
+                return NotFound(new { error = "User not found, cannot create topic" });
 
             }
 
@@ -114,7 +114,7 @@ namespace Forum.Web.Controllers
 
             if (id == null || !topicService.TopicExists(id))
             {
-                return NotFound(JsonConvert.SerializeObject(new { error = $"Topic with ID: '{id}' not found" }));
+                return NotFound(new { error = $"Topic with ID: '{id}' not found" });
             }
 
             var post = new Post
