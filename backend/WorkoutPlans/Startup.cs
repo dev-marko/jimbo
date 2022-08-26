@@ -15,6 +15,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WorkoutPlans.Context;
+using WorkoutPlans.Repository.Implementations;
+using WorkoutPlans.Repository.Interfaces;
 
 namespace WorkoutPlans
 {
@@ -53,6 +55,9 @@ namespace WorkoutPlans
                         IssuerSigningKey = new SymmetricSecurityKey(key)
                     };
                 });
+
+            //// Repos
+            //services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

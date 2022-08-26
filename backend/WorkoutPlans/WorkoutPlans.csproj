@@ -7,10 +7,8 @@
 
   <ItemGroup>
     <Folder Include="Domain\DTO\" />
-    <Folder Include="Domain\ViewModels\" />
-    <Folder Include="Web\" />
-    <Folder Include="Services\" />
-    <Folder Include="Repository\" />
+    <Folder Include="Services\Implementations\" />
+    <Folder Include="Web\Controllers\" />
   </ItemGroup>
 
   <ItemGroup>
