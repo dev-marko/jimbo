@@ -38,7 +38,7 @@ namespace Forum.Controllers
         {
             if (id == null || !subforumService.SubforumExists(id))
             {
-                return NotFound(JsonConvert.SerializeObject(new { error = $"Subforum with ID: '{id}' not found" }));
+                return NotFound(new { error = $"Subforum with ID: '{id}' not found" });
             }
 
             var subforumViewModel = subforumService.FetchSubforumViewModelWithTopicsById(id);
@@ -50,11 +50,11 @@ namespace Forum.Controllers
         {
             if (id == null || !subforumService.SubforumExists(id))
             {
-                return NotFound(JsonConvert.SerializeObject(new { error = $"Subforum with ID: '{id}' not found" }));
+                return NotFound(new { error = $"Subforum with ID: '{id}' not found" });
             }
 
             var topics = topicService.FetchTopicsForSubforum(id);
-            return Ok(JsonConvert.SerializeObject(topics));
+            return Ok(topics);
         }
 
         [HttpPost("sub-forum")]
@@ -79,7 +79,7 @@ namespace Forum.Controllers
         {
             if (id == null || !subforumService.SubforumExists(id))
             {
-                return NotFound(JsonConvert.SerializeObject(new { error = $"Subforum with ID: '{id}' not found" }));
+                return NotFound(new { error = $"Subforum with ID: '{id}' not found" });
             }
 
             var subforumToEdit = subforumService.FetchSubforumById(id);
@@ -99,7 +99,7 @@ namespace Forum.Controllers
         {
             if (id == null || !subforumService.SubforumExists(id))
             {
-                return NotFound(JsonConvert.SerializeObject(new { error = $"Subforum with ID: '{id}' not found" }));
+                return NotFound(new { error = $"Subforum with ID: '{id}' not found" });
             }
 
             Subforum subforumToDelete = subforumService.FetchSubforumById(id);
@@ -118,14 +118,14 @@ namespace Forum.Controllers
 
             if (string.IsNullOrEmpty(token))
             {
-                return NotFound(JsonConvert.SerializeObject(new { error = "Invalid Bearer Token" }));
+                return NotFound(new { error = "Invalid Bearer Token" });
             }
 
             User loggedInUser = userService.FetchCurrentUser(token).Result;
 
             if (loggedInUser == null)
             {
-                return NotFound(JsonConvert.SerializeObject(new { error = "User not found, cannot create topic" }));
+                return NotFound(new { error = "User not found, cannot create topic" });
 
             }
 
@@ -133,7 +133,7 @@ namespace Forum.Controllers
 
             if (id == null || !subforumService.SubforumExists(id))
             {
-                return NotFound(JsonConvert.SerializeObject(new { error = $"Subforum with ID: '{id}' not found" }));
+                return NotFound(new { error = $"Subforum with ID: '{id}' not found" });
             }
 
             var topic = new Topic

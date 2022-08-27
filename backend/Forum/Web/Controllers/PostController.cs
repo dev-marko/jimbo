@@ -27,7 +27,7 @@ namespace Forum.Web.Controllers
         {
             if (id == null || !postService.PostExists(id))
             {
-                return NotFound(JsonSerializer.Serialize(new { error = $"Post with ID: '{id}' not found" }));
+                return NotFound(new { error = $"Post with ID: '{id}' not found" });
             }
 
             var postViewModel = postService.FetchPostViewModelById(id);
@@ -39,7 +39,7 @@ namespace Forum.Web.Controllers
         {
             if (id == null || !postService.PostExists(id))
             {
-                return NotFound(JsonSerializer.Serialize(new { error = $"Post with ID: '{id}' not found" }));
+                return NotFound(new { error = $"Post with ID: '{id}' not found" });
             }
 
             var postToEdit = postService.FetchPostById(id);
@@ -58,7 +58,7 @@ namespace Forum.Web.Controllers
         {
             if (id == null || !postService.PostExists(id))
             {
-                return NotFound(JsonSerializer.Serialize(new { error = $"Post with ID: '{id}' not found" }));
+                return NotFound(new { error = $"Post with ID: '{id}' not found" });
             }
 
             var postToDelete = postService.FetchPostById(id);
