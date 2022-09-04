@@ -16,13 +16,13 @@
     "incremental": true,
     "baseUrl": "src/",
     "paths": {
-      "~phaxios": ["phaxios/index.ts"],
+      "~fetcher": ["fetcher/index.ts"],
+      "~theme": ["theme/index.ts"],
       "~constants/*": ["constants/*"],
       "~providers/*": ["providers/*"],
       "~types/*": ["types/*"],
       "~utils/*": ["utils/*"],
       "~components/*": ["components/*"],
-      "~providers/*": ["providers/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

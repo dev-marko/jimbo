@@ -52,14 +52,11 @@ namespace Authentication.Controllers
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
 
-            if (identity != null)
-            {
-                var claims = identity.Claims;
-                var currentUser = userService.FetchUserByUsername(claims.FirstOrDefault(i => i.Type == ClaimTypes.NameIdentifier)?.Value);
-                return currentUser;
-            }
+            if (identity == null) return null;
+            var claims = identity.Claims;
+            var currentUser = userService.FetchUserByUsername(claims.FirstOrDefault(i => i.Type == ClaimTypes.NameIdentifier)?.Value);
+            return currentUser;
 
-            return null;
         }
     }
 }
