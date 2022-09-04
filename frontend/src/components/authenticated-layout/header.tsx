@@ -12,7 +12,7 @@ const Header = () => {
     <HStack
       as="nav"
       position="sticky"
-      zIndex="popover"
+      zIndex="banner"
       top={0}
       alignItems="center"
       justifyContent="space-between"
