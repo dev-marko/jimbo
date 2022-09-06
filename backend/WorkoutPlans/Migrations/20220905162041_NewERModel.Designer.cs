@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WorkoutPlans.Context;
@@ -9,9 +10,10 @@ using WorkoutPlans.Context;
 namespace WorkoutPlans.Migrations
 {
     [DbContext(typeof(WorkoutPlansContext))]
-    partial class WorkoutPlansContextModelSnapshot : ModelSnapshot
+    [Migration("20220905162041_NewERModel")]
+    partial class NewERModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,33 +83,6 @@ namespace WorkoutPlans.Migrations
                     b.ToTable("ExerciseForWorkoutSessions");
                 });
 
-            modelBuilder.Entity("WorkoutPlans.Domain.Relations.SessionForWeek", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("ExerciseSessionExerciseId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ExerciseSessionSessionName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("WeekName")
-                        .HasColumnType("text");
-
-                    b.Property<Guid?>("WeekTrainingProgramId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ExerciseSessionExerciseId", "ExerciseSessionSessionName");
-
-                    b.HasIndex("WeekTrainingProgramId", "WeekName");
-
-                    b.ToTable("SessionForWeeks");
-                });
-
             modelBuilder.Entity("WorkoutPlans.Domain.Relations.TrainingProgramWeek", b =>
                 {
                     b.Property<Guid>("TrainingProgramId")
@@ -129,17 +104,6 @@ namespace WorkoutPlans.Migrations
                         .HasConstraintName("FK_ExerciseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("WorkoutPlans.Domain.Relations.SessionForWeek", b =>
-                {
-                    b.HasOne("WorkoutPlans.Domain.Relations.ExerciseForWorkoutSession", "ExerciseSession")
-                        .WithMany("Weeks")
-                        .HasForeignKey("ExerciseSessionExerciseId", "ExerciseSessionSessionName");
-
-                    b.HasOne("WorkoutPlans.Domain.Relations.TrainingProgramWeek", "Week")
-                        .WithMany("Sessions")
-                        .HasForeignKey("WeekTrainingProgramId", "WeekName");
                 });
 
             modelBuilder.Entity("WorkoutPlans.Domain.Relations.TrainingProgramWeek", b =>
