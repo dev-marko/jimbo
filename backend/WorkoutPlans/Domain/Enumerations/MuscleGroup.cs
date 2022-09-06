@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace WorkoutPlans.Domain.Enumerations
 {
-    public enum MuscleGroups
+    public enum MuscleGroup
     {
         Abs,
         Back,

@@ -15,13 +15,10 @@ namespace WorkoutPlans.Context
         }
 
         public virtual DbSet<Exercise> Exercises { get; set; }
-        public virtual DbSet<ExerciseSession> ExerciseSessions { get; set; }
-        public virtual DbSet<WorkoutSession> WorkoutSessions { get; set; }
-        public virtual DbSet<ExerciseSessionInWorkoutSession> ExerciseSessionsInWorkoutSessions { get; set; }
-        public virtual DbSet<Week> Weeks { get; set; }
-        public virtual DbSet<WorkoutSessionInWeek> WorkoutSessionsInWeeks { get; set; }
         public virtual DbSet<TrainingProgram> TrainingPrograms { get; set; }
-        public virtual DbSet<WeekInTrainingProgram> WeeksInTrainingPrograms { get; set; }
+        public virtual DbSet<TrainingProgramWeek> TrainingProgramWeeks { get; set; }
+        public virtual DbSet<ExerciseForWorkoutSession> ExerciseForWorkoutSessions { get; set; }
+        public virtual DbSet<SessionForWeek> SessionForWeeks { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,60 +27,25 @@ namespace WorkoutPlans.Context
 
             // === Primary keys ===
             modelBuilder.Entity<Exercise>().Property(e => e.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<ExerciseSession>().Property(e => e.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<WorkoutSession>().Property(e => e.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<ExerciseSessionInWorkoutSession>().Property(e => e.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<Week>().Property(e => e.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<WorkoutSessionInWeek>().Property(e => e.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<TrainingProgram>().Property(e => e.Id).ValueGeneratedOnAdd();
-            modelBuilder.Entity<WeekInTrainingProgram>().Property(e => e.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<SessionForWeek>().Property(e => e.Id).ValueGeneratedOnAdd();
 
-            // === Foreign Keys (one-to-one & one-to-many relations) ===
-            modelBuilder.Entity<ExerciseSession>().HasOne(e => e.Exercise);
+            // === Primary keys for weak entities ===
+            modelBuilder.Entity<TrainingProgramWeek>().HasKey(e => new { e.TrainingProgramId, e.Name });
+            modelBuilder.Entity<ExerciseForWorkoutSession>().HasKey(e => new { e.ExerciseId, e.SessionName });
 
-            // === Foreign Keys (many-to-many relations) ===
-
-            // Foreign key to the Exercise for a Workout Session
-            modelBuilder.Entity<ExerciseSessionInWorkoutSession>()
-                .HasOne(e => e.ExerciseSession)
-                .WithMany(e => e.Workouts)
-                .HasForeignKey(e => e.ExerciseSessionId)
-                .HasConstraintName("FK_ExerciseSessionId");
-
-            // Foreign key to the Workout for an Exercise Session
-            modelBuilder.Entity<ExerciseSessionInWorkoutSession>()
-                .HasOne(e => e.WorkoutSession)
-                .WithMany(e => e.Exercises)
-                .HasForeignKey(e => e.WorkoutSessionId)
-                .HasConstraintName("FK_WorkoutSessionId");
-
-            // Foreign key to the Workout Session for a Week
-            modelBuilder.Entity<WorkoutSessionInWeek>()
-                .HasOne(e => e.WorkoutSession)
-                .WithMany(e => e.Weeks)
-                .HasForeignKey(e => e.WorkoutSessionId)
-                .HasConstraintName("FK_WorkoutSessionId");
-
-            // Foreign key to the Week for a Workout Session
-            modelBuilder.Entity<WorkoutSessionInWeek>()
-                .HasOne(e => e.Week)
-                .WithMany(e => e.Workouts)
-                .HasForeignKey(e => e.WeekId)
-                .HasConstraintName("FK_WeekId");
-
-            // Foreing key to the Week in a Training Program
-            modelBuilder.Entity<WeekInTrainingProgram>()
-                .HasOne(e => e.Week)
-                .WithMany(e => e.TrainingPrograms)
-                .HasForeignKey(e => e.WeekId)
-                .HasConstraintName("FK_WeekId");
-
-            // Foreign key to the Training Program in a Week
-            modelBuilder.Entity<WeekInTrainingProgram>()
+            // === Foreign Keys ===
+            modelBuilder.Entity<TrainingProgramWeek>()
                 .HasOne(e => e.TrainingProgram)
                 .WithMany(e => e.Weeks)
                 .HasForeignKey(e => e.TrainingProgramId)
                 .HasConstraintName("FK_TrainingProgramId");
+
+            modelBuilder.Entity<ExerciseForWorkoutSession>()
+                .HasOne(e => e.Exercise)
+                .WithMany(e => e.WorkoutSessions)
+                .HasForeignKey(e => e.ExerciseId)
+                .HasConstraintName("FK_ExerciseId");
 
         }
     }

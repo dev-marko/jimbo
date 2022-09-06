@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WorkoutPlans.Domain.Relations;
 
-namespace WorkoutPlans.Domain.Models
+namespace WorkoutPlans.Domain.DTO
 {
-    public class TrainingProgram : BaseEntity
+    public class TrainingProgramDTO
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public virtual ICollection<TrainingProgramWeek> Weeks { get; set; }
     }
 }
