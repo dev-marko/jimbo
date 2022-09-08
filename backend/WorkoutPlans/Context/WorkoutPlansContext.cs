@@ -17,7 +17,7 @@ namespace WorkoutPlans.Context
         public virtual DbSet<Exercise> Exercises { get; set; }
         public virtual DbSet<TrainingProgram> TrainingPrograms { get; set; }
         public virtual DbSet<TrainingProgramWeek> TrainingProgramWeeks { get; set; }
-        public virtual DbSet<ExerciseForWorkoutSession> ExerciseForWorkoutSessions { get; set; }
+        public virtual DbSet<WorkoutSessionForExercise> WorkoutSessionsForExercises { get; set; }
         public virtual DbSet<SessionForWeek> SessionForWeeks { get; set; }
 
 
@@ -32,7 +32,7 @@ namespace WorkoutPlans.Context
 
             // === Primary keys for weak entities ===
             modelBuilder.Entity<TrainingProgramWeek>().HasKey(e => new { e.TrainingProgramId, e.Name });
-            modelBuilder.Entity<ExerciseForWorkoutSession>().HasKey(e => new { e.ExerciseId, e.SessionName });
+            modelBuilder.Entity<WorkoutSessionForExercise>().HasKey(e => new { e.ExerciseId, e.Name });
 
             // === Foreign Keys ===
             modelBuilder.Entity<TrainingProgramWeek>()
@@ -41,12 +41,21 @@ namespace WorkoutPlans.Context
                 .HasForeignKey(e => e.TrainingProgramId)
                 .HasConstraintName("FK_TrainingProgramId");
 
-            modelBuilder.Entity<ExerciseForWorkoutSession>()
+            modelBuilder.Entity<WorkoutSessionForExercise>()
                 .HasOne(e => e.Exercise)
                 .WithMany(e => e.WorkoutSessions)
                 .HasForeignKey(e => e.ExerciseId)
                 .HasConstraintName("FK_ExerciseId");
 
+            modelBuilder.Entity<SessionForWeek>()
+                .HasOne(e => e.Week)
+                .WithMany(e => e.Sessions)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<SessionForWeek>()
+                .HasOne(e => e.WorkoutSession)
+                .WithMany(e => e.Weeks)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -9,8 +9,10 @@ namespace WorkoutPlans.Services.Interfaces
 {
     public interface ISessionForWeekService
     {
-        List<SessionForWeek> FetchAllWorkoutSessionsForWeek(Guid trainingProgramId, string weekName);
-        SessionForWeek CreateWorkoutSessionForWeek(TrainingProgramWeekDTO trainingProgramWeekDTO, ExerciseForWorkoutSessionDTO exerciseForWorkoutSessionDTO);
+        List<SessionForWeek> FetchAllWorkoutSessionsForWeek(TrainingProgramWeekDTO trainingProgramWeekDTO);
+        SessionForWeek CreateWorkoutSessionForWeek(TrainingProgramWeekDTO trainingProgramWeekDTO, WorkoutSessionForExerciseDTO workoutSessionForExerciseDTO);
+        void CreateMultipleWorkoutSessionsForWeek(TrainingProgramWeekDTO trainingProgramWeekDTO);
+        void UpdateMultipleWorkoutSessionsForWeek(List<SessionForWeek> oldSessions, TrainingProgramWeekDTO trainingProgramWeekDTO);
 
         // TODO: 
         // DELETE

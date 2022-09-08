@@ -12,23 +12,30 @@ namespace WorkoutPlans.Repository.Implementations
     public class ExerciseRepository : IExerciseRepository
     {
         private readonly WorkoutPlansContext context;
-        private DbSet<ExerciseForWorkoutSession> exerciseForWorkoutSessions;
+        private DbSet<WorkoutSessionForExercise> workoutSessionsForExercises;
 
         public ExerciseRepository(WorkoutPlansContext context)
         {
             this.context = context;
-            this.exerciseForWorkoutSessions = context.Set<ExerciseForWorkoutSession>();
+            this.workoutSessionsForExercises = context.Set<WorkoutSessionForExercise>();
         }
 
-        public ExerciseForWorkoutSession FetchExerciseForWorkoutSession(Guid exerciseId, string workoutSessionName)
+        public WorkoutSessionForExercise FetchWorkoutSessionForExercise(Guid exerciseId, string workoutSessionName)
         {
-            return exerciseForWorkoutSessions
-                .SingleOrDefault(e => (e.ExerciseId == exerciseId) && e.SessionName.Equals(workoutSessionName));
+            return workoutSessionsForExercises
+                .SingleOrDefault(e => (e.ExerciseId == exerciseId) && e.Name.Equals(workoutSessionName));
         }
 
-        public ExerciseForWorkoutSession InsertExerciseForWorkoutSession(ExerciseForWorkoutSession exerciseForWorkoutSession)
+        public WorkoutSessionForExercise InsertWorkoutSessionForExercise(WorkoutSessionForExercise workoutSessionForExercise)
         {
-            var entity = exerciseForWorkoutSessions.Add(exerciseForWorkoutSession).Entity;
+            var entity = workoutSessionsForExercises.Add(workoutSessionForExercise).Entity;
+            context.SaveChanges();
+            return entity;
+        }
+
+        public WorkoutSessionForExercise DeleteWorkoutSessionForExercise(WorkoutSessionForExercise workoutSessionForExercise)
+        {
+            var entity = workoutSessionsForExercises.Remove(workoutSessionForExercise).Entity;
             context.SaveChanges();
             return entity;
         }

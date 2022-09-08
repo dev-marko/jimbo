@@ -22,7 +22,10 @@ namespace WorkoutPlans.Repository.Implementations
 
         public IEnumerable<SessionForWeek> FetchWorkoutSessionsForWeek(Guid trainingProgramId, string weekName)
         {
-            return sessionForWeeks.Where(e => (e.Week.TrainingProgramId == trainingProgramId) && e.Week.Name.Equals(weekName));
+            return sessionForWeeks
+                .Include(e => e.WorkoutSession)
+                .ThenInclude(e => e.Exercise)
+                .Where(e => (e.Week.TrainingProgramId == trainingProgramId) && e.Week.Name.Equals(weekName));
         }
     }
 }

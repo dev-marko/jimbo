@@ -9,6 +9,6 @@ namespace WorkoutPlans.Domain.Relations
     public class SessionForWeek : BaseEntity
     {
         public TrainingProgramWeek Week { get; set; }
-        public ExerciseForWorkoutSession ExerciseSession { get; set; }
+        public WorkoutSessionForExercise WorkoutSession { get; set; }
     }
 }

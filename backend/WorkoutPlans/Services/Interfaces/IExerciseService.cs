@@ -12,14 +12,22 @@ namespace WorkoutPlans.Services.Interfaces
 {
     public interface IExerciseService
     {
+        // exercises
         ExerciseVM FetchExerciseById(Guid exerciseId);
         List<ExerciseVM> FetchAllExercises();
         List<ExerciseVM> FetchAllExercisesByMuscleGroup(MuscleGroup muscleGroup);
-        ExerciseForWorkoutSession FetchExerciseForWorkoutSession(ExerciseForWorkoutSessionDTO exerciseForWorkoutSessionDTO);
-        ExerciseForWorkoutSession CreateExerciseForWorkoutSession(ExerciseForWorkoutSessionDTO exerciseForWorkoutSessionDTO);
         ExerciseVM CreateExercise(ExerciseDTO exerciseDTO);
         ExerciseVM UpdateExercise(Guid exerciseId, ExerciseDTO exerciseDTO);
         ExerciseVM DeleteExercise(Guid exerciseId);
         bool ExerciseExists(Guid exerciseId);
+
+        // workout sessions
+        WorkoutSessionForExercise FetchWorkoutSessionForExercise(WorkoutSessionForExerciseDTO workoutSessionForExerciseDTO);
+        WorkoutSessionForExercise CreateWorkoutSessionForExercise(WorkoutSessionForExerciseDTO workoutSessionForExerciseDTO);
+        List<WorkoutSessionForExercise> CreateWorkoutSessionsForListOfExercises(List<WorkoutSessionForExerciseDTO> workoutSessionForExerciseDTOs);
+        WorkoutSessionForExercise UpdateWorkoutSessionForExercise(WorkoutSessionForExerciseDTO workoutSessionForExerciseDTO);
+        List<WorkoutSessionForExercise> UpdateWorkoutSessionsForListOfExercises(List<WorkoutSessionForExerciseDTO> workoutSessionForExerciseDTOs);
+        WorkoutSessionForExercise DeleteWorkoutSessionForExercise(WorkoutSessionForExerciseDTO workoutSessionForExerciseDTO);
+        bool WorkoutSessionForExerciseExists(WorkoutSessionForExerciseDTO workoutSessionForExerciseDTO);
     }
 }

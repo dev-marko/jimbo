@@ -7,9 +7,9 @@ using WorkoutPlans.Domain.Relations;
 
 namespace WorkoutPlans.Domain.Relations
 {
-    public class ExerciseForWorkoutSession
+    public class WorkoutSessionForExercise
     {
-        public string SessionName { get; set; }
+        public string Name { get; set; }
         public string Reps { get; set; }
         public string Sets { get; set; }
         public string RestTime { get; set; }

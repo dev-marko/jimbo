@@ -11,5 +11,6 @@ namespace WorkoutPlans.Repository.Interfaces
         IEnumerable<TrainingProgramWeek> FetchWeeksForTrainingProgram(Guid trainingProgramId);
         TrainingProgramWeek FetchTrainingProgramWeek(Guid trainingProgramId, string weekName);
         TrainingProgramWeek InsertTrainingProgramWeek(TrainingProgramWeek trainingProgramWeek);
+        TrainingProgramWeek DeleteTrainingProgramWeek(TrainingProgramWeek trainingProgramWeek);
     }
 }

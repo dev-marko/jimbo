@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WorkoutPlans.Context;
@@ -9,9 +10,10 @@ using WorkoutPlans.Context;
 namespace WorkoutPlans.Migrations
 {
     [DbContext(typeof(WorkoutPlansContext))]
-    partial class WorkoutPlansContextModelSnapshot : ModelSnapshot
+    [Migration("20220906192628_RenamedExerciseForWorkoutSessionTable")]
+    partial class RenamedExerciseForWorkoutSessionTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,14 +76,14 @@ namespace WorkoutPlans.Migrations
                     b.Property<Guid?>("WorkoutSessionExerciseId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("WorkoutSessionName")
+                    b.Property<string>("WorkoutSessionSessionName")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("WeekTrainingProgramId", "WeekName");
 
-                    b.HasIndex("WorkoutSessionExerciseId", "WorkoutSessionName");
+                    b.HasIndex("WorkoutSessionExerciseId", "WorkoutSessionSessionName");
 
                     b.ToTable("SessionForWeeks");
                 });
@@ -104,7 +106,7 @@ namespace WorkoutPlans.Migrations
                     b.Property<Guid>("ExerciseId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("SessionName")
                         .HasColumnType("text");
 
                     b.Property<string>("Reps")
@@ -116,7 +118,7 @@ namespace WorkoutPlans.Migrations
                     b.Property<string>("Sets")
                         .HasColumnType("text");
 
-                    b.HasKey("ExerciseId", "Name");
+                    b.HasKey("ExerciseId", "SessionName");
 
                     b.ToTable("WorkoutSessionsForExercises");
                 });
@@ -125,13 +127,11 @@ namespace WorkoutPlans.Migrations
                 {
                     b.HasOne("WorkoutPlans.Domain.Relations.TrainingProgramWeek", "Week")
                         .WithMany("Sessions")
-                        .HasForeignKey("WeekTrainingProgramId", "WeekName")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("WeekTrainingProgramId", "WeekName");
 
                     b.HasOne("WorkoutPlans.Domain.Relations.WorkoutSessionForExercise", "WorkoutSession")
                         .WithMany("Weeks")
-                        .HasForeignKey("WorkoutSessionExerciseId", "WorkoutSessionName")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("WorkoutSessionExerciseId", "WorkoutSessionSessionName");
                 });
 
             modelBuilder.Entity("WorkoutPlans.Domain.Relations.TrainingProgramWeek", b =>

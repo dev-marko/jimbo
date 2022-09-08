@@ -32,13 +32,21 @@ namespace WorkoutPlans.Repository.Implementations
             return trainingProgramWeeks
                 .Where(e => e.TrainingProgramId == trainingProgramId)
                 .Include(e => e.Sessions)
-                .ThenInclude(e => e.ExerciseSession);
+                .ThenInclude(e => e.WorkoutSession)
+                .ThenInclude(e => e.Exercise);
         }
 
         public TrainingProgramWeek FetchTrainingProgramWeek(Guid trainingProgramId, string weekName)
         {
             return trainingProgramWeeks
                 .SingleOrDefault(e => (e.TrainingProgramId == trainingProgramId) && e.Name.Equals(weekName));
+        }
+
+        public TrainingProgramWeek DeleteTrainingProgramWeek(TrainingProgramWeek trainingProgramWeek)
+        {
+            var entity = trainingProgramWeeks.Remove(trainingProgramWeek).Entity;
+            context.SaveChanges();
+            return entity;
         }
     }
 }

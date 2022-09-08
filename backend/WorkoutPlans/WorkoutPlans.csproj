@@ -6,12 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Domain\DTO\" />
-    <Folder Include="Services\Implementations\" />
-    <Folder Include="Web\Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.28" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.28" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.28" />

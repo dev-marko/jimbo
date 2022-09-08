@@ -8,7 +8,8 @@ namespace WorkoutPlans.Repository.Interfaces
 {
     public interface IExerciseRepository
     {
-        ExerciseForWorkoutSession FetchExerciseForWorkoutSession(Guid exerciseId, string workoutSessionName);
-        ExerciseForWorkoutSession InsertExerciseForWorkoutSession(ExerciseForWorkoutSession exerciseForWorkoutSession);
+        WorkoutSessionForExercise FetchWorkoutSessionForExercise(Guid exerciseId, string workoutSessionName);
+        WorkoutSessionForExercise InsertWorkoutSessionForExercise(WorkoutSessionForExercise workoutSessionForExercise);
+        WorkoutSessionForExercise DeleteWorkoutSessionForExercise(WorkoutSessionForExercise workoutSessionForExercise);
     }
 }

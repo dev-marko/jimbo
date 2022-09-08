@@ -17,6 +17,8 @@ using System.Threading.Tasks;
 using WorkoutPlans.Context;
 using WorkoutPlans.Repository.Implementations;
 using WorkoutPlans.Repository.Interfaces;
+using WorkoutPlans.Services.Implementations;
+using WorkoutPlans.Services.Interfaces;
 
 namespace WorkoutPlans
 {
@@ -57,7 +59,20 @@ namespace WorkoutPlans
                 });
 
             //// Repos
-            //services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<ITrainingProgramRepository, TrainingProgramRepository>();
+            services.AddScoped<ISessionForWeekRepository, SessionForWeekRepository>();
+            services.AddScoped<IExerciseRepository, ExerciseRepository>();
+
+            // Services
+            services.AddTransient<IExerciseService, ExerciseService>();
+            services.AddTransient<ITrainingProgramService, TrainingProgramService>();
+            services.AddTransient<ISessionForWeekService, SessionForWeekService>();
+
+            // JSON
+            services.AddControllers()
+                .AddNewtonsoftJson(options => 
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
