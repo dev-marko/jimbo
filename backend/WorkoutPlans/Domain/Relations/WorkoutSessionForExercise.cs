@@ -9,12 +9,14 @@ namespace WorkoutPlans.Domain.Relations
 {
     public class WorkoutSessionForExercise
     {
-        public string Name { get; set; }
+        public string SessionName { get; set; }
         public string Reps { get; set; }
         public string Sets { get; set; }
         public string RestTime { get; set; }
         public Guid ExerciseId { get; set; }
         public Exercise Exercise { get; set; }
-        public virtual ICollection<SessionForWeek> Weeks { get; set; }
+        public string WeekName { get; set; }
+        public Guid TrainingProgramId { get; set; }
+        public TrainingProgramWeek TrainingProgramWeek { get; set; }
     }
 }

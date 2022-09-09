@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WorkoutPlans.Context;
@@ -9,9 +10,10 @@ using WorkoutPlans.Context;
 namespace WorkoutPlans.Migrations
 {
     [DbContext(typeof(WorkoutPlansContext))]
-    partial class WorkoutPlansContextModelSnapshot : ModelSnapshot
+    [Migration("20220909102331_ForeignKeysWorkoutSessionWeek")]
+    partial class ForeignKeysWorkoutSessionWeek
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,10 +66,10 @@ namespace WorkoutPlans.Migrations
                     b.Property<Guid>("TrainingProgramId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("WeekName")
+                    b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.HasKey("TrainingProgramId", "WeekName");
+                    b.HasKey("TrainingProgramId", "Name");
 
                     b.ToTable("TrainingProgramWeeks");
                 });
@@ -77,7 +79,7 @@ namespace WorkoutPlans.Migrations
                     b.Property<Guid>("ExerciseId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("SessionName")
+                    b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.Property<string>("WeekName")
@@ -95,9 +97,9 @@ namespace WorkoutPlans.Migrations
                     b.Property<string>("Sets")
                         .HasColumnType("text");
 
-                    b.HasKey("ExerciseId", "SessionName", "WeekName", "TrainingProgramId");
+                    b.HasKey("ExerciseId", "Name", "WeekName", "TrainingProgramId");
 
-                    b.HasIndex("TrainingProgramId", "WeekName");
+                    b.HasIndex("TrainingProgramId", "Name");
 
                     b.ToTable("WorkoutSessionsForExercises");
                 });
@@ -123,7 +125,7 @@ namespace WorkoutPlans.Migrations
 
                     b.HasOne("WorkoutPlans.Domain.Relations.TrainingProgramWeek", "TrainingProgramWeek")
                         .WithMany("WorkoutSessions")
-                        .HasForeignKey("TrainingProgramId", "WeekName")
+                        .HasForeignKey("TrainingProgramId", "Name")
                         .HasConstraintName("FK_TrainingProgramWeek")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

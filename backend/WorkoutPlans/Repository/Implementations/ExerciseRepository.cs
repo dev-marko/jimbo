@@ -20,10 +20,10 @@ namespace WorkoutPlans.Repository.Implementations
             this.workoutSessionsForExercises = context.Set<WorkoutSessionForExercise>();
         }
 
-        public WorkoutSessionForExercise FetchWorkoutSessionForExercise(Guid exerciseId, string workoutSessionName)
+        public WorkoutSessionForExercise FetchWorkoutSessionForExercise(Guid exerciseId, string workoutSessionName, string weekName, Guid trainingProgramId)
         {
             return workoutSessionsForExercises
-                .SingleOrDefault(e => (e.ExerciseId == exerciseId) && e.Name.Equals(workoutSessionName));
+                .SingleOrDefault(e => (e.ExerciseId == exerciseId) && (e.TrainingProgramId == trainingProgramId) && (e.SessionName.Equals(workoutSessionName)) && (e.WeekName.Equals(weekName)));
         }
 
         public WorkoutSessionForExercise InsertWorkoutSessionForExercise(WorkoutSessionForExercise workoutSessionForExercise)
@@ -38,6 +38,12 @@ namespace WorkoutPlans.Repository.Implementations
             var entity = workoutSessionsForExercises.Remove(workoutSessionForExercise).Entity;
             context.SaveChanges();
             return entity;
+        }
+
+        public IEnumerable<WorkoutSessionForExercise> FetchWorkoutSessionsForWeek(string weekName, Guid trainingProgramId)
+        {
+            return workoutSessionsForExercises
+                .Where(e => e.WeekName.Equals(weekName) && (e.TrainingProgramId == trainingProgramId));
         }
     }
 }

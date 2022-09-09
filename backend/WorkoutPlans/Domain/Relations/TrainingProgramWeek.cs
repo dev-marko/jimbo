@@ -8,9 +8,9 @@ namespace WorkoutPlans.Domain.Relations
 {
     public class TrainingProgramWeek
     {
-        public string Name { get; set; }
+        public string WeekName { get; set; }
         public Guid TrainingProgramId { get; set; }
         public TrainingProgram TrainingProgram { get; set; }
-        public virtual ICollection<SessionForWeek> Sessions { get; set; }
+        public virtual ICollection<WorkoutSessionForExercise> WorkoutSessions { get; set; }
     }
 }

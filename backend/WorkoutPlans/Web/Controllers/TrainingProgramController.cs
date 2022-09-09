@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using WorkoutPlans.Domain.DTO;
-using WorkoutPlans.Domain.Relations;
 using WorkoutPlans.Services.Interfaces;
 
 namespace WorkoutPlans.Web.Controllers
@@ -16,13 +11,11 @@ namespace WorkoutPlans.Web.Controllers
     {
         private readonly ITrainingProgramService trainingProgramService;
         private readonly IExerciseService exerciseService;
-        private readonly ISessionForWeekService sessionForWeekService;
 
-        public TrainingProgramController(ITrainingProgramService trainingProgramService, IExerciseService exerciseService, ISessionForWeekService sessionForWeekService)
+        public TrainingProgramController(ITrainingProgramService trainingProgramService, IExerciseService exerciseService)
         {
             this.trainingProgramService = trainingProgramService;
             this.exerciseService = exerciseService;
-            this.sessionForWeekService = sessionForWeekService;
         }
 
         [HttpGet]
@@ -52,7 +45,7 @@ namespace WorkoutPlans.Web.Controllers
             }
 
             // You get just the workout sessions with the exercise included
-            return Ok(sessionForWeekService.FetchAllWorkoutSessionsForWeek(trainingProgramWeekDTO));
+            return Ok(exerciseService.FetchWorkoutSessionsForWeek(trainingProgramWeekDTO));
         }
 
         [HttpGet("{id}")]
@@ -102,7 +95,6 @@ namespace WorkoutPlans.Web.Controllers
             if (trainingProgramWeekDTO.WorkoutSessions != null)
             {
                 exerciseService.CreateWorkoutSessionsForListOfExercises(trainingProgramWeekDTO.WorkoutSessions);
-                sessionForWeekService.CreateMultipleWorkoutSessionsForWeek(trainingProgramWeekDTO);
             }
 
             return Ok("test");
@@ -111,11 +103,11 @@ namespace WorkoutPlans.Web.Controllers
         [HttpPut("week")]
         public IActionResult UpdateTrainingProgramWeek([FromBody] TrainingProgramWeekDTO trainingProgramWeekDTO)
         {
-            List<SessionForWeek> oldSessions = sessionForWeekService.FetchAllWorkoutSessionsForWeek(trainingProgramWeekDTO);
-
+            // Don't forget to add OldWeekName to the DTO
+            // Don't forget to add OldExerciseId, OldName, OldWeekName & TrainingProgramId properties to DTOs
+            exerciseService.DeleteMultipleWorkoutSessions(trainingProgramWeekDTO.WorkoutSessions);
             trainingProgramService.UpdateTrainingProgramWeek(trainingProgramWeekDTO);
-            exerciseService.UpdateWorkoutSessionsForListOfExercises(trainingProgramWeekDTO.WorkoutSessions);
-            sessionForWeekService.UpdateMultipleWorkoutSessionsForWeek(oldSessions, trainingProgramWeekDTO);
+            exerciseService.CreateWorkoutSessionsForListOfExercises(trainingProgramWeekDTO.WorkoutSessions);
 
             return Ok("test");
         }
@@ -123,6 +115,7 @@ namespace WorkoutPlans.Web.Controllers
         [HttpDelete("week")]
         public IActionResult DeleteTrainingProgramWeek([FromBody] TrainingProgramWeekDTO trainingProgramWeekDTO)
         {
+            // Don't forget to add OldWeekName to the DTO
             return Ok(trainingProgramService.DeleteTrainingProgramWeek(trainingProgramWeekDTO));
         }
     }

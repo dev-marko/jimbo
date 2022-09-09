@@ -23,11 +23,13 @@ namespace WorkoutPlans.Services.Interfaces
 
         // workout sessions
         WorkoutSessionForExercise FetchWorkoutSessionForExercise(WorkoutSessionForExerciseDTO workoutSessionForExerciseDTO);
+        List<WorkoutSessionForExercise> FetchWorkoutSessionsForWeek(TrainingProgramWeekDTO trainingProgramWeekDTO);
         WorkoutSessionForExercise CreateWorkoutSessionForExercise(WorkoutSessionForExerciseDTO workoutSessionForExerciseDTO);
         List<WorkoutSessionForExercise> CreateWorkoutSessionsForListOfExercises(List<WorkoutSessionForExerciseDTO> workoutSessionForExerciseDTOs);
         WorkoutSessionForExercise UpdateWorkoutSessionForExercise(WorkoutSessionForExerciseDTO workoutSessionForExerciseDTO);
-        List<WorkoutSessionForExercise> UpdateWorkoutSessionsForListOfExercises(List<WorkoutSessionForExerciseDTO> workoutSessionForExerciseDTOs);
+        //List<WorkoutSessionForExercise> UpdateWorkoutSessionsForListOfExercises(List<WorkoutSessionForExerciseDTO> workoutSessionForExerciseDTOs);
         WorkoutSessionForExercise DeleteWorkoutSessionForExercise(WorkoutSessionForExerciseDTO workoutSessionForExerciseDTO);
+        void DeleteMultipleWorkoutSessions(List<WorkoutSessionForExerciseDTO> workoutSessionForExerciseDTOs);
         bool WorkoutSessionForExerciseExists(WorkoutSessionForExerciseDTO workoutSessionForExerciseDTO);
     }
 }

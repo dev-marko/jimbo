@@ -61,13 +61,11 @@ namespace WorkoutPlans
             //// Repos
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<ITrainingProgramRepository, TrainingProgramRepository>();
-            services.AddScoped<ISessionForWeekRepository, SessionForWeekRepository>();
             services.AddScoped<IExerciseRepository, ExerciseRepository>();
 
             // Services
             services.AddTransient<IExerciseService, ExerciseService>();
             services.AddTransient<ITrainingProgramService, TrainingProgramService>();
-            services.AddTransient<ISessionForWeekService, SessionForWeekService>();
 
             // JSON
             services.AddControllers()

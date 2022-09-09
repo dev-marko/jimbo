@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WorkoutPlans.Domain.DTO;
 using WorkoutPlans.Domain.Enumerations;
 using WorkoutPlans.Domain.Models;
@@ -15,14 +14,17 @@ namespace WorkoutPlans.Services.Implementations
     public class ExerciseService : IExerciseService
     {
         private readonly IRepository<Exercise> exerciseRepositoryGeneric;
+        private readonly ITrainingProgramRepository trainingProgramRepository;
         private readonly IExerciseRepository exerciseRepository;
 
-        public ExerciseService(IRepository<Exercise> exerciseRepositoryGeneric, IExerciseRepository exerciseRepository)
+        public ExerciseService(IRepository<Exercise> exerciseRepositoryGeneric, ITrainingProgramRepository trainingProgramRepository, IExerciseRepository exerciseRepository)
         {
             this.exerciseRepositoryGeneric = exerciseRepositoryGeneric;
+            this.trainingProgramRepository = trainingProgramRepository;
             this.exerciseRepository = exerciseRepository;
         }
 
+        // EXERCISES
         public ExerciseVM CreateExercise(ExerciseDTO exerciseDTO)
         {
             var exercise = new Exercise
@@ -99,16 +101,21 @@ namespace WorkoutPlans.Services.Implementations
             return CreateExerciseViewModel(toUpdate);
         }
 
+
+        // WORKOUT SESSION FOR EXERCISE
         public WorkoutSessionForExercise CreateWorkoutSessionForExercise(WorkoutSessionForExerciseDTO workoutSessionForExerciseDTO)
         {
             var exerciseForWorkoutSession = new WorkoutSessionForExercise
             {
-                Name = workoutSessionForExerciseDTO.Name,
+                SessionName = workoutSessionForExerciseDTO.SessionName,
                 Sets = workoutSessionForExerciseDTO.Sets,
                 Reps = workoutSessionForExerciseDTO.Reps,
                 RestTime = workoutSessionForExerciseDTO.RestTime,
                 ExerciseId = workoutSessionForExerciseDTO.ExerciseId,
-                Exercise = exerciseRepositoryGeneric.FetchById(workoutSessionForExerciseDTO.ExerciseId)
+                //Exercise = exerciseRepositoryGeneric.FetchById(workoutSessionForExerciseDTO.ExerciseId),
+                WeekName = workoutSessionForExerciseDTO.WeekName,
+                TrainingProgramId = workoutSessionForExerciseDTO.TrainingProgramId,
+                TrainingProgramWeek = trainingProgramRepository.FetchTrainingProgramWeek(workoutSessionForExerciseDTO.TrainingProgramId, workoutSessionForExerciseDTO.WeekName)
             };
 
             return exerciseRepository.InsertWorkoutSessionForExercise(exerciseForWorkoutSession);
@@ -117,27 +124,46 @@ namespace WorkoutPlans.Services.Implementations
         public WorkoutSessionForExercise FetchWorkoutSessionForExercise(WorkoutSessionForExerciseDTO workoutSessionForExerciseDTO)
         {
             return exerciseRepository
-                .FetchWorkoutSessionForExercise(workoutSessionForExerciseDTO.ExerciseId, workoutSessionForExerciseDTO.Name);
+                .FetchWorkoutSessionForExercise(
+                workoutSessionForExerciseDTO.ExerciseId, 
+                workoutSessionForExerciseDTO.SessionName,
+                workoutSessionForExerciseDTO.WeekName,
+                workoutSessionForExerciseDTO.TrainingProgramId);
         }
 
         public WorkoutSessionForExercise DeleteWorkoutSessionForExercise(WorkoutSessionForExerciseDTO workoutSessionForExerciseDTO)
         {
-            var toDelete = exerciseRepository.FetchWorkoutSessionForExercise(workoutSessionForExerciseDTO.OldExerciseId, workoutSessionForExerciseDTO.OldName);
+            // Don't forget to add OldExerciseId, OldName, OldWeekName & TrainingProgramId properties to DTOs
+            var toDelete = exerciseRepository.FetchWorkoutSessionForExercise(
+                workoutSessionForExerciseDTO.OldExerciseId, 
+                workoutSessionForExerciseDTO.OldSessionName, 
+                workoutSessionForExerciseDTO.OldWeekName, 
+                workoutSessionForExerciseDTO.TrainingProgramId);
             return exerciseRepository.DeleteWorkoutSessionForExercise(toDelete);
         }
 
         public bool WorkoutSessionForExerciseExists(WorkoutSessionForExerciseDTO workoutSessionForExerciseDTO)
         {
-            return exerciseRepository.FetchWorkoutSessionForExercise(workoutSessionForExerciseDTO.OldExerciseId, workoutSessionForExerciseDTO.OldName) != null;
+            // Don't forget to add OldExerciseId, OldName, OldWeekName & TrainingProgramId properties to DTOs
+            return exerciseRepository.FetchWorkoutSessionForExercise(
+                workoutSessionForExerciseDTO.OldExerciseId, 
+                workoutSessionForExerciseDTO.OldSessionName,
+                workoutSessionForExerciseDTO.OldWeekName,
+                workoutSessionForExerciseDTO.TrainingProgramId) != null;
         }
 
         public WorkoutSessionForExercise UpdateWorkoutSessionForExercise(WorkoutSessionForExerciseDTO workoutSessionForExerciseDTO)
         {
-            WorkoutSessionForExercise toUpdate = exerciseRepository.FetchWorkoutSessionForExercise(workoutSessionForExerciseDTO.OldExerciseId, workoutSessionForExerciseDTO.OldName);
+            // Don't forget to add OldExerciseId, OldName, OldWeekName & TrainingProgramId properties to DTOs
+            WorkoutSessionForExercise toUpdate = exerciseRepository.FetchWorkoutSessionForExercise(
+                workoutSessionForExerciseDTO.OldExerciseId, 
+                workoutSessionForExerciseDTO.OldSessionName,
+                workoutSessionForExerciseDTO.OldWeekName,
+                workoutSessionForExerciseDTO.TrainingProgramId);
 
             DeleteWorkoutSessionForExercise(workoutSessionForExerciseDTO);
 
-            toUpdate.Name = workoutSessionForExerciseDTO.Name;
+            toUpdate.SessionName = workoutSessionForExerciseDTO.SessionName;
             toUpdate.Sets = workoutSessionForExerciseDTO.Sets;
             toUpdate.Reps = workoutSessionForExerciseDTO.Reps;
             toUpdate.RestTime = workoutSessionForExerciseDTO.RestTime;
@@ -151,11 +177,14 @@ namespace WorkoutPlans.Services.Implementations
             return workoutSessionForExerciseDTOs.Select(e => CreateWorkoutSessionForExercise(e)).ToList();
         }
 
-        public List<WorkoutSessionForExercise> UpdateWorkoutSessionsForListOfExercises(List<WorkoutSessionForExerciseDTO> workoutSessionForExerciseDTOs)
+        public List<WorkoutSessionForExercise> FetchWorkoutSessionsForWeek(TrainingProgramWeekDTO trainingProgramWeekDTO)
         {
-            // Don't forget to add OldExerciseId and OldName properties to DTOs
+            return exerciseRepository.FetchWorkoutSessionsForWeek(trainingProgramWeekDTO.WeekName, trainingProgramWeekDTO.TrainingProgramId).ToList();
+        }
+
+        public void DeleteMultipleWorkoutSessions(List<WorkoutSessionForExerciseDTO> workoutSessionForExerciseDTOs)
+        {
             workoutSessionForExerciseDTOs.ForEach(e => DeleteWorkoutSessionForExercise(e));
-            return CreateWorkoutSessionsForListOfExercises(workoutSessionForExerciseDTOs);
         }
     }
 }

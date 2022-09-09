@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WorkoutPlans.Domain.DTO;
 using WorkoutPlans.Domain.Models;
 using WorkoutPlans.Domain.Relations;
@@ -21,6 +20,12 @@ namespace WorkoutPlans.Services.Implementations
             this.trainingProgramRepository = trainingProgramRepository;
         }
 
+        // TRAINING PROGRAM
+        public TrainingProgram FetchTrainingProgramById(Guid trainingProgramId)
+        {
+            return trainingProgramRepositoryGeneric.FetchById(trainingProgramId);
+        }
+
         public TrainingProgram CreateTrainingProgram(TrainingProgramDTO trainingProgramDTO)
         {
             var trainingProgram = new TrainingProgram
@@ -32,49 +37,15 @@ namespace WorkoutPlans.Services.Implementations
             return trainingProgramRepositoryGeneric.Insert(trainingProgram);
         }
 
-        public TrainingProgramWeek CreateTrainingProgramWeek(TrainingProgramWeekDTO trainingProgramWeekDTO)
-        {
-            var trainingProgramWeek = new TrainingProgramWeek
-            {
-                Name = trainingProgramWeekDTO.Name,
-                TrainingProgramId = trainingProgramWeekDTO.TrainingProgramId,
-                TrainingProgram = FetchTrainingProgramById(trainingProgramWeekDTO.TrainingProgramId)
-            };
-
-            return trainingProgramRepository.InsertTrainingProgramWeek(trainingProgramWeek);
-        }
-
         public TrainingProgram DeleteTrainingProgram(Guid trainingProgramId)
         {
             var trainingProgram = trainingProgramRepositoryGeneric.FetchById(trainingProgramId);
             return trainingProgramRepositoryGeneric.Delete(trainingProgram);
         }
 
-        public TrainingProgramWeek DeleteTrainingProgramWeek(TrainingProgramWeekDTO trainingProgramWeekDTO)
-        {
-            var toDelete = trainingProgramRepository.FetchTrainingProgramWeek(trainingProgramWeekDTO.TrainingProgramId, trainingProgramWeekDTO.OldName);
-            return trainingProgramRepository.DeleteTrainingProgramWeek(toDelete);
-        }
-
         public List<TrainingProgram> FetchAllTrainingPrograms()
         {
             return trainingProgramRepositoryGeneric.FetchAll().ToList();
-        }
-
-        public List<TrainingProgramWeek> FetchAllWeeksForTrainingProgram(Guid trainingProgramId)
-        {
-            return trainingProgramRepository.FetchWeeksForTrainingProgram(trainingProgramId).ToList();
-        }
-
-        public TrainingProgram FetchTrainingProgramById(Guid trainingProgramId)
-        {
-            return trainingProgramRepositoryGeneric.FetchById(trainingProgramId);
-        }
-
-        public TrainingProgramWeek FetchTrainingProgramWeek(TrainingProgramWeekDTO trainingProgramWeekDTO)
-        {
-            return trainingProgramRepository
-                .FetchTrainingProgramWeek(trainingProgramWeekDTO.TrainingProgramId, trainingProgramWeekDTO.Name);
         }
 
         public bool TrainingProgramExists(Guid trainingProgramId)
@@ -92,14 +63,44 @@ namespace WorkoutPlans.Services.Implementations
             return trainingProgramRepositoryGeneric.Update(toUpdate);
         }
 
+        // TRAINING PROGRAM WEEK
+        public TrainingProgramWeek CreateTrainingProgramWeek(TrainingProgramWeekDTO trainingProgramWeekDTO)
+        {
+            var trainingProgramWeek = new TrainingProgramWeek
+            {
+                WeekName = trainingProgramWeekDTO.WeekName,
+                TrainingProgramId = trainingProgramWeekDTO.TrainingProgramId,
+                TrainingProgram = FetchTrainingProgramById(trainingProgramWeekDTO.TrainingProgramId)
+            };
+
+            return trainingProgramRepository.InsertTrainingProgramWeek(trainingProgramWeek);
+        }
+
+        public TrainingProgramWeek DeleteTrainingProgramWeek(TrainingProgramWeekDTO trainingProgramWeekDTO)
+        {
+            var toDelete = trainingProgramRepository.FetchTrainingProgramWeek(trainingProgramWeekDTO.TrainingProgramId, trainingProgramWeekDTO.OldWeekName);
+            return trainingProgramRepository.DeleteTrainingProgramWeek(toDelete);
+        }
+
+        public List<TrainingProgramWeek> FetchAllWeeksForTrainingProgram(Guid trainingProgramId)
+        {
+            return trainingProgramRepository.FetchWeeksForTrainingProgram(trainingProgramId).ToList();
+        }
+
+        public TrainingProgramWeek FetchTrainingProgramWeek(TrainingProgramWeekDTO trainingProgramWeekDTO)
+        {
+            return trainingProgramRepository
+                .FetchTrainingProgramWeek(trainingProgramWeekDTO.TrainingProgramId, trainingProgramWeekDTO.WeekName);
+        }
+
         public TrainingProgramWeek UpdateTrainingProgramWeek(TrainingProgramWeekDTO trainingProgramWeekDTO)
         {
-            var toUpdate = trainingProgramRepository.FetchTrainingProgramWeek(trainingProgramWeekDTO.TrainingProgramId, trainingProgramWeekDTO.OldName);
+            var toUpdate = trainingProgramRepository.FetchTrainingProgramWeek(trainingProgramWeekDTO.TrainingProgramId, trainingProgramWeekDTO.OldWeekName);
 
-            // Don't forget to add OldName property to the DTO
+            // Don't forget to add OldWeekName property to the DTO
             DeleteTrainingProgramWeek(trainingProgramWeekDTO); 
 
-            toUpdate.Name = trainingProgramWeekDTO.Name;
+            toUpdate.WeekName = trainingProgramWeekDTO.WeekName;
 
             return trainingProgramRepository.InsertTrainingProgramWeek(toUpdate);
         }

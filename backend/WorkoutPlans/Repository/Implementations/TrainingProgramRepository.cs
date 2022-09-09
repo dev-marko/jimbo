@@ -31,15 +31,14 @@ namespace WorkoutPlans.Repository.Implementations
         {
             return trainingProgramWeeks
                 .Where(e => e.TrainingProgramId == trainingProgramId)
-                .Include(e => e.Sessions)
-                .ThenInclude(e => e.WorkoutSession)
-                .ThenInclude(e => e.Exercise);
+                .Include(e => e.WorkoutSessions);
         }
 
         public TrainingProgramWeek FetchTrainingProgramWeek(Guid trainingProgramId, string weekName)
         {
             return trainingProgramWeeks
-                .SingleOrDefault(e => (e.TrainingProgramId == trainingProgramId) && e.Name.Equals(weekName));
+                .Include(e => e.WorkoutSessions)
+                .SingleOrDefault(e => (e.TrainingProgramId == trainingProgramId) && e.WeekName.Equals(weekName));
         }
 
         public TrainingProgramWeek DeleteTrainingProgramWeek(TrainingProgramWeek trainingProgramWeek)
