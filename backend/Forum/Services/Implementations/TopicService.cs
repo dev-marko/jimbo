@@ -61,6 +61,8 @@ namespace Forum.Services.Implementations
             var posts = entity.Posts;
             var postViewModels = posts.Select(p => postService.FetchPostViewModelById(p.Id)).ToList();
 
+            postViewModels.Sort((x, y) => DateTime.Compare(y.CreatedAt, x.CreatedAt));
+
             return new TopicViewModel
             {
                 TopicId = entity.Id,
@@ -91,6 +93,8 @@ namespace Forum.Services.Implementations
             var topic = FetchTopicById(id);
             var posts = topic.Posts;
             var postViewModels = posts.Select(p => postService.FetchPostViewModelById(p.Id)).ToList();
+
+            postViewModels.Sort((x, y) => DateTime.Compare(y.CreatedAt, x.CreatedAt));
 
             return new TopicViewModel
             {
