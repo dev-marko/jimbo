@@ -74,6 +74,13 @@ export async function getStaticProps({ params }: { params: { id: string } }) {
 }
 
 export async function getStaticPaths() {
+  if (process.env.SKIP_BUILD_STATIC_GENERATION) {
+    return {
+      paths: [],
+      fallback: 'blocking',
+    };
+  }
+
   const { data: forums } = await fetcher.get(`${FORUM_API_URL}/Forum/sub-forum`);
 
   return {

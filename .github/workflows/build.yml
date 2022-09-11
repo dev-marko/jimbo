@@ -29,6 +29,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Add ENV variables
+        run: echo SKIP_BUILD_STATIC_GENERATION=true >> .env
+
       - name: Build
         run: npm run build
 
@@ -49,7 +52,7 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.101
-      
+
       - name: Install dependencies
         run: dotnet restore
 
