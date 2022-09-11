@@ -8,17 +8,17 @@ type Props = {
 
 const AuthenticatedLayout = ({ children }: Props) => {
   return (
-    <Box bg="gray.50">
+    <Box bg="gray.50" h="100%">
       <Header />
       <Container
         display="flex"
         maxW="container.md"
-        minH={{ base: 'auto', md: '100vh' }}
         px={{ base: 4, lg: 0 }}
         centerContent
+        flex={1}
       >
-        <VStack alignItems="stretch" flex={1} w="full" spacing={16}>
-          <VStack as="main" flex={1} w="full" spacing={16}>
+        <VStack alignItems="stretch" w="full" spacing={16}>
+          <VStack as="main" w="full" spacing={16}>
             {children}
           </VStack>
         </VStack>

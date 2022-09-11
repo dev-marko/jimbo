@@ -40,10 +40,15 @@ const Forums = () => {
       </HStack>
       {
         forums.map((forum: Forum) => (
-          <ForumCard key={forum.name} {...forum} />
+          <ForumCard key={forum.id} {...forum} />
         ))
       }
-      <CreateForumDrawer refetch={refetch} ref={createForumRef} onClose={onClose} isOpen={isOpen} />
+      <CreateForumDrawer
+        refetch={refetch}
+        drawerRef={createForumRef}
+        onClose={onClose}
+        isOpen={isOpen}
+      />
     </VStack>
   );
 };

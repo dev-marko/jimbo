@@ -1,20 +1,20 @@
-import { Heading, HStack, LinkBox, LinkOverlay, VStack, Text } from '@chakra-ui/react';
+import { LinkBox, VStack, LinkOverlay, Heading, HStack, Text } from '@chakra-ui/react';
 import Link from 'next/link';
+import { format } from 'timeago.js';
 
-import { CategoriesEnum } from '~types/forums/categories';
-import { Forum } from '~types/forums/forum';
+import { Topic } from '~types/topics';
 
-type Props = Forum;
+type Props = Topic;
 
-const ForumCard = ({ id, name, description, category }: Props) => {
+const TopicCard = ({ title, subforumId: id, topicId, createdAt, ownerUsername }: Props) => {
   return (
     <LinkBox as="article" w="full">
       <VStack
         alignItems="stretch"
         w="full"
-        p={4}
-        bg="gray.100"
+        p={{ base: 0, md: 4 }}
         _hover={{
+          bg: 'gray.100',
           transform: 'scale(1.025, 1.025)',
         }}
         _dark={{
@@ -30,33 +30,30 @@ const ForumCard = ({ id, name, description, category }: Props) => {
         <VStack alignItems="flex-start">
           <Link
             href={{
-              pathname: '/forums/[id]',
-              query: { id },
+              pathname: '/forums/[id]/topics/[topicId]',
+              query: { id, topicId },
             }}
             passHref
           >
             <LinkOverlay>
-              <Heading size="md">{name}</Heading>
+              <Heading size="md">{title}</Heading>
             </LinkOverlay>
           </Link>
-          <HStack
-            divider={(
-              <Text mx={2} color="gray.500">
-                •
-              </Text>
-            )}
-          >
+          <HStack>
             <Text color="gray.500" fontSize="sm">
-              {CategoriesEnum[category]}
+              {format(createdAt)}
+              {' '}
+              by
+              {' '}
+              {ownerUsername}
             </Text>
-            <Text color="gray.500" fontSize="sm">
-              {description}
-            </Text>
+            <Text color="gray.500" fontSize="sm" />
           </HStack>
         </VStack>
+
       </VStack>
     </LinkBox>
   );
 };
 
-export default ForumCard;
+export default TopicCard;

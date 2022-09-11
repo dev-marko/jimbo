@@ -11,19 +11,22 @@ import { Forum } from '~types/forums/forum';
 
 type Props = {
   refetch: () => Promise<QueryObserverResult<AxiosResponse<any, any>, unknown>>;
-  ref: any;
+  drawerRef: any;
   onClose: () => void;
   isOpen: boolean;
 };
 
-const CreateForumDrawer = ({ refetch, ref, onClose, isOpen }: Props) => {
-  const { mutateAsync } = useMutation(['/Forum/sub-forum'], async (forum: Forum) => fetcher.post(`${FORUM_API_URL}/Forum/sub-forum`, forum));
+const CreateForumDrawer = ({ refetch, drawerRef, onClose, isOpen }: Props) => {
+  const { mutateAsync } = useMutation(
+    ['/Forum/sub-forum'],
+    async (forum: Omit<Forum, 'id' | 'topics'>) => fetcher.post(`${FORUM_API_URL}/Forum/sub-forum`, forum),
+  );
 
   return (
     <Drawer
       isOpen={isOpen}
       placement="right"
-      initialFocusRef={ref}
+      initialFocusRef={drawerRef}
       onClose={onClose}
     >
       <DrawerOverlay />
@@ -45,7 +48,7 @@ const CreateForumDrawer = ({ refetch, ref, onClose, isOpen }: Props) => {
               description: string().required('Description is required'),
               categories: mixed().oneOf(Object.keys(CategoriesEnum)),
             })}
-            onSubmit={async (values: Forum) => {
+            onSubmit={async (values: Omit<Forum, 'id' | 'topics'>) => {
               const { name, description, category } = values;
 
               await mutateAsync({ name, description, category });

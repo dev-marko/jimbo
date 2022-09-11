@@ -37,6 +37,7 @@ namespace Forum
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddCors();
             services.AddControllers();
             services.AddDbContext<ForumContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
@@ -72,7 +73,7 @@ namespace Forum
             // Https Clients
             services.AddHttpClient<IUserService, UserService>(c =>
             {
-                c.BaseAddress = new Uri("https://localhost:44305/api/user/");
+                c.BaseAddress = new Uri("http://localhost:5000/api/user/");
             });
 
             // JSON config
@@ -88,6 +89,7 @@ namespace Forum
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseCors(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             }
 
             if (!env.IsDevelopment())
