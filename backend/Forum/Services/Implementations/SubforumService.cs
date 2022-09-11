@@ -70,6 +70,7 @@ namespace Forum.Services.Implementations
             if (subforum.Topics != null)
             {
                 topics = subforum.Topics.Select(t => topicService.FetchTopicViewModelById(t.Id)).ToList();
+                topics.Sort((x, y) => DateTime.Compare(y.CreatedAt, x.CreatedAt));
             }
 
             return new SubforumViewModel
@@ -89,6 +90,7 @@ namespace Forum.Services.Implementations
             if (entity.Topics != null)
             {
                 topics = entity.Topics.Select(t => topicService.FetchTopicViewModelById(t.Id)).ToList();
+                topics.Sort((x, y) => DateTime.Compare(y.CreatedAt, x.CreatedAt));
             }
 
             return new SubforumViewModel
