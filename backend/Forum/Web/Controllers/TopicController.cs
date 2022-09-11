@@ -96,7 +96,7 @@ namespace Forum.Web.Controllers
         public IActionResult AddPostToTopic(Guid id, [FromBody] PostDTO postDTO)
         {
             string token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
-            
+
             if (string.IsNullOrEmpty(token))
             {
                 return NotFound(new { error = "Invalid Bearer Token" });
@@ -123,8 +123,8 @@ namespace Forum.Web.Controllers
                 Topic = topic,
                 AuthorUsername = loggedInUser.Username,
                 Content = postDTO.Content,
-                CreatedAt = DateTime.UtcNow,
-                LastModified = DateTime.UtcNow
+                CreatedAt = DateTime.Now,
+                LastModified = DateTime.Now
             };
 
             var postViewModel = postService.CreatePost(post);

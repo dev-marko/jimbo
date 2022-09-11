@@ -150,7 +150,7 @@ namespace Forum.Controllers
                 SubforumId = subforum.Id,
                 Subforum = subforum,
                 Title = topicDTO.Title,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
             var topicViewModel = topicService.CreateTopic(topic);
