@@ -1,6 +1,7 @@
 import { Box, Container, VStack } from '@chakra-ui/react';
 
 import Header from './header';
+import MobileNavigation from './mobile-navigation';
 
 type Props = {
   children: React.ReactNode;
@@ -8,7 +9,7 @@ type Props = {
 
 const AuthenticatedLayout = ({ children }: Props) => {
   return (
-    <Box bg="gray.50" h="100%">
+    <Box bg="gray.50" height="100vh" overflow="auto">
       <Header />
       <Container
         display="flex"
