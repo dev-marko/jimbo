@@ -1,7 +1,6 @@
 import { Box, Container, VStack } from '@chakra-ui/react';
 
 import Header from './header';
-import MobileNavigation from './mobile-navigation';
 
 type Props = {
   children: React.ReactNode;
