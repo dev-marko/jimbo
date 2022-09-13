@@ -1,18 +1,18 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { Button, Container, Heading, HStack, Icon, Link } from '@chakra-ui/react';
+import { Avatar, Box, Button, Container, Divider, Heading, HStack, Icon, Link, Popover, PopoverArrow, PopoverBody, PopoverContent, PopoverTrigger, VStack } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import { MdLogout } from 'react-icons/md';
 
 import { useAuth } from '~providers/auth-provider';
 
 const Header = () => {
-  const { signOut } = useAuth();
+  const { user, signOut } = useAuth();
 
   return (
     <HStack
       as="nav"
       position="sticky"
-      zIndex="popover"
+      zIndex="banner"
       top={0}
       alignItems="center"
       justifyContent="space-between"
@@ -40,9 +40,35 @@ const Header = () => {
           </Link>
         </NextLink>
         <HStack alignItems="center" spacing={{ base: 0, md: 2 }}>
-          <Button variant="ghost" size="sm" leftIcon={<Icon as={MdLogout} />} onClick={signOut}>
-            Logout
-          </Button>
+          <Popover>
+            <PopoverTrigger>
+              <Box
+                _hover={{
+                  bg: 'gray.100',
+                }}
+                p={1.5}
+                rounded="full"
+                transition="all 0.2s ease-in"
+              >
+                <Avatar
+                  size="sm"
+                />
+              </Box>
+            </PopoverTrigger>
+            <PopoverContent>
+              <PopoverArrow />
+              <PopoverBody px={0} py={2}>
+                <VStack align="start">
+                  <HStack spacing={4} p={4}>
+                    <Avatar size="sm" />
+                    <Heading suppressHydrationWarning size="sm" fontWeight="semibold">{user}</Heading>
+                  </HStack>
+                  <Divider borderWidth="1px" />
+                  <Button variant="ghost" aria-label="Logout button" leftIcon={<Icon as={MdLogout} />} onClick={signOut}>Sign out</Button>
+                </VStack>
+              </PopoverBody>
+            </PopoverContent>
+          </Popover>
         </HStack>
       </Container>
     </HStack>

@@ -7,11 +7,16 @@ export const routes = [
   {
     name: 'Sign In',
     path: '/sign-in',
-    isProteced: false,
+    isProtected: false,
   },
   {
     name: 'Sign Up',
     path: '/sign-up',
-    isProteced: false,
+    isProtected: false,
+  },
+  {
+    name: 'Forums',
+    path: '/forums',
+    isProtected: true,
   },
 ];

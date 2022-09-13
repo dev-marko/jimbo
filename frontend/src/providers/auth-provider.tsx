@@ -1,15 +1,16 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 /* eslint-disable import/no-anonymous-default-export */
-import { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { createContext, useContext, useEffect, useState } from 'react';
 
-import { SignInInput } from '~types/authentication/sign-in';
+import { AUTHENTICATION_API_URL } from '~constants/api';
 import { TOKEN, USER } from '~constants/storage';
-import { isOnAuthenticatedRoute } from '~utils/is-on-authenticated-route';
+import fetcher from '~fetcher';
+import { SignInInput } from '~types/authentication/sign-in';
 import { SignUpInput } from '~types/authentication/sign-up';
 import { readFromLocalStorage, removeFromLocalStorage, writeToLocalStorage } from '~utils/local-storage';
-import fetcher from '~fetcher';
-import { AUTHENTICATION_API_URL } from '~constants/api';
+
+const publicRoutes: string[] = ['/sign-up', '/sign-in'];
 
 type Props = {
   children: React.ReactNode;
@@ -17,6 +18,7 @@ type Props = {
 
 type AuthContextProps = {
   user: string | null;
+  token: string | null;
   signIn: (input: SignInInput) => Promise<void>;
   signUp: (input: SignUpInput) => Promise<void>;
   signOut: () => void;
@@ -26,19 +28,18 @@ type AuthContextProps = {
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider = ({ children }: Props) => {
-  const { push, replace, asPath, pathname } = useRouter();
+  const { push, asPath, pathname } = useRouter();
   const [token, setToken] = useState<string | null>(readFromLocalStorage(TOKEN));
   const [user, setUser] = useState<string | null>(readFromLocalStorage(USER));
   const isAuthenticated = !!(token && user);
 
   useEffect(() => {
-    if ((isAuthenticated && isOnAuthenticatedRoute(asPath)) ||
-      (!isAuthenticated && !isOnAuthenticatedRoute(asPath))) {
-      replace(asPath);
-    } else if (isAuthenticated && !isOnAuthenticatedRoute(asPath)) {
-      replace('/');
-    } else {
-      replace('/sign-in');
+    const isOnAuthenticatedRoute = !publicRoutes.some((route: string) => route === asPath);
+
+    if (isAuthenticated && !isOnAuthenticatedRoute) {
+      push('/');
+    } else if (!isAuthenticated && isOnAuthenticatedRoute) {
+      push('/sign-in');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
@@ -86,6 +87,7 @@ export const AuthProvider = ({ children }: Props) => {
       signIn,
       signOut,
       user,
+      token,
     }}
     >
       {children}

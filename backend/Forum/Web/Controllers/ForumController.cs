@@ -33,6 +33,14 @@ namespace Forum.Controllers
             this.topicService = topicService;
         }
 
+        [HttpGet]
+        [Route("sub-forum")]
+        public IActionResult GetSubforums()
+        {
+            var subforums = subforumService.FetchAllSubforums();
+            return Ok(subforums);
+        }
+        
         [HttpGet("sub-forum/{id}")]
         public IActionResult GetSubforum(Guid id)
         {

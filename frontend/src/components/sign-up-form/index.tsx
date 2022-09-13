@@ -1,4 +1,13 @@
-import { VStack, FormControl, FormLabel, Input, FormErrorMessage, Button, Alert, AlertIcon } from '@chakra-ui/react';
+import {
+  VStack,
+  FormControl,
+  FormLabel,
+  Input,
+  FormErrorMessage,
+  Button,
+  Alert,
+  AlertIcon,
+} from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
 import { Formik, Field } from 'formik';
 import { object, string } from 'yup';
@@ -8,8 +17,10 @@ import { SignUpInput } from '~types/authentication/sign-up';
 
 const SignUpForm = () => {
   const { signUp } = useAuth();
-  const { mutateAsync, isLoading, isError, error, isSuccess } =
-    useMutation(['signIn'], async ({ email, username, password }: SignUpInput) => signUp({ email, username, password }));
+  const { mutateAsync, isLoading, isError, error, isSuccess } = useMutation(
+    ['signIn'],
+    async ({ email, username, password }: SignUpInput) => signUp({ email, username, password }),
+  );
 
   return (
     <Formik
@@ -32,28 +43,40 @@ const SignUpForm = () => {
       {({ handleSubmit, errors, touched }) => (
         <form onSubmit={handleSubmit}>
           <VStack spacing={4} align="flex-start">
-            <FormControl isInvalid={!!errors.username && touched.username} isRequired>
-              <FormLabel htmlFor="username">
-                Username
-              </FormLabel>
+            <FormControl
+              isInvalid={!!errors.username && touched.username}
+              isRequired
+            >
+              <FormLabel htmlFor="username">Username</FormLabel>
               <Field as={Input} name="username" variant="filled" />
               <FormErrorMessage>{errors.username}</FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={!!errors.email && touched.email} isRequired>
-              <FormLabel htmlFor="email">
-                Email
-              </FormLabel>
+              <FormLabel htmlFor="email">Email</FormLabel>
               <Field as={Input} name="email" type="email" variant="filled" />
               <FormErrorMessage>{errors.email}</FormErrorMessage>
             </FormControl>
-            <FormControl isInvalid={!!errors.password && touched.password} isRequired>
-              <FormLabel htmlFor="password">
-                Password
-              </FormLabel>
-              <Field as={Input} name="password" type="password" variant="filled" />
+            <FormControl
+              isInvalid={!!errors.password && touched.password}
+              isRequired
+            >
+              <FormLabel htmlFor="password">Password</FormLabel>
+              <Field
+                as={Input}
+                name="password"
+                type="password"
+                variant="filled"
+              />
               <FormErrorMessage>{errors.password}</FormErrorMessage>
             </FormControl>
-            <Button disabled={isLoading} type="submit" w="full" colorScheme="purple">Sign in</Button>
+            <Button
+              disabled={isLoading}
+              type="submit"
+              w="full"
+              colorScheme="purple"
+            >
+              Sign in
+            </Button>
             {isSuccess && (
               <Alert status="success">
                 <AlertIcon />
