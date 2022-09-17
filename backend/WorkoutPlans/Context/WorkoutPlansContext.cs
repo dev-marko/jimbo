@@ -54,16 +54,6 @@ namespace WorkoutPlans.Context
                 .WithMany(e => e.WorkoutSessions)
                 .HasConstraintName("FK_TrainingProgramWeek")
                 .OnDelete(DeleteBehavior.Cascade);
-
-            //modelBuilder.Entity<SessionForWeek>()
-            //    .HasOne(e => e.Week)
-            //    .WithMany(e => e.Sessions)
-            //    .OnDelete(DeleteBehavior.Cascade);
-
-            //modelBuilder.Entity<SessionForWeek>()
-            //    .HasOne(e => e.WorkoutSession)
-            //    .WithMany(e => e.Weeks)
-            //    .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
