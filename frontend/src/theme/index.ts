@@ -3,6 +3,7 @@ import { extendTheme, ThemeConfig, theme as base } from '@chakra-ui/react';
 const config: ThemeConfig = {
   initialColorMode: 'light',
   useSystemColorMode: true,
+  cssVarPrefix: 'jimbo',
 };
 
 const theme = extendTheme({

@@ -1,62 +1,84 @@
-import { Button, FormControl, FormErrorMessage, FormLabel, Heading, Input, Stack, Textarea, VStack } from '@chakra-ui/react';
-import { Field, Formik, useFormik } from 'formik';
-import { ReactElement } from 'react';
-import { object, string } from 'yup';
+import { Button, FormControl, FormLabel, Heading, Input, Stack, Textarea, useDisclosure, VStack } from '@chakra-ui/react';
+import { FormEvent, ReactElement, useState } from 'react';
 
 import AuthenticatedLayout from '~components/authenticated-layout';
+import CreateWorkoutPlanDrawer from '~components/create-workout-plan-drawer';
+import { Exercise } from '~types/workout-plans/exercise';
 
 const Create = () => {
-  const formik = useFormik({
-    initialValues: {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [weekName, setWeekName] = useState('');
+  const [sessionName, setSessionName] = useState('');
+  const [exercises, setExercises] = useState<Exercise[]>([
+    {
       name: '',
-      description: '',
+      sets: 0,
+      reps: 0,
+      restTime: 0,
     },
-    validationSchema: object({
-      name: string().required('Name is required'),
-      description: string().required('Description is required'),
-    }),
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
-    },
-  });
+  ]);
+
+  const onSubmitFirstForm = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (name && description) {
+      onOpen();
+    }
+  };
+
+  const onSubmit = () => {
+    console.log('submit!!!');
+  };
 
   return (
     <VStack w="full" align="flex-start">
       <Heading size="md">
         New workout plan
       </Heading>
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={(event) => onSubmitFirstForm(event)}>
         <Stack spacing={6} mt={12}>
-          <FormControl isInvalid={!!formik.errors.name && formik.touched.name}>
-            <FormLabel htmlFor="name">Name</FormLabel>
+          <FormControl>
+            <FormLabel htmlFor="description">Description</FormLabel>
             <Input
               variant="filled"
               id="name"
               name="name"
-              onChange={formik.handleChange}
-              value={formik.values.name}
+              onChange={(event) => setName(event.target.value)}
+              value={name}
             />
-            <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
           </FormControl>
 
-          <FormControl isInvalid={!!formik.errors.description && formik.touched.description}>
+          <FormControl>
             <FormLabel htmlFor="description">Description</FormLabel>
             <Textarea
-              onChange={formik.handleChange}
+              onChange={(event) => setDescription(event.target.value)}
               variant="filled"
               name="description"
               id="description"
               resize="none"
-              value={formik.values.description}
+              value={description}
             />
-            <FormErrorMessage>{formik.errors.description}</FormErrorMessage>
           </FormControl>
-
-          <Button type="submit" colorScheme="purple" w="max-content">
+          <Button
+            type="submit"
+            colorScheme="purple"
+          >
             Add week
           </Button>
         </Stack>
       </form>
+      <CreateWorkoutPlanDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        exercises={exercises}
+        setExercises={setExercises}
+        weekName={weekName}
+        setWeekName={setWeekName}
+        sessionName={sessionName}
+        setSessionName={setSessionName}
+        onSubmit={onSubmit}
+      />
     </VStack>
   );
 };
