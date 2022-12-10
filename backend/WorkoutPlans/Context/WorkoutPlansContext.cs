@@ -18,7 +18,6 @@ namespace WorkoutPlans.Context
         public virtual DbSet<TrainingProgram> TrainingPrograms { get; set; }
         public virtual DbSet<TrainingProgramWeek> TrainingProgramWeeks { get; set; }
         public virtual DbSet<WorkoutSessionForExercise> WorkoutSessionsForExercises { get; set; }
-        //public virtual DbSet<SessionForWeek> SessionForWeeks { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

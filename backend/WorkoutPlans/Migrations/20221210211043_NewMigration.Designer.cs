@@ -10,8 +10,8 @@ using WorkoutPlans.Context;
 namespace WorkoutPlans.Migrations
 {
     [DbContext(typeof(WorkoutPlansContext))]
-    [Migration("20220908224300_Cascade")]
-    partial class Cascade
+    [Migration("20221210211043_NewMigration")]
+    partial class NewMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -61,42 +61,15 @@ namespace WorkoutPlans.Migrations
                     b.ToTable("TrainingPrograms");
                 });
 
-            modelBuilder.Entity("WorkoutPlans.Domain.Relations.SessionForWeek", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("WeekName")
-                        .HasColumnType("text");
-
-                    b.Property<Guid?>("WeekTrainingProgramId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("WorkoutSessionExerciseId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("WorkoutSessionName")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WeekTrainingProgramId", "WeekName");
-
-                    b.HasIndex("WorkoutSessionExerciseId", "WorkoutSessionName");
-
-                    b.ToTable("SessionForWeeks");
-                });
-
             modelBuilder.Entity("WorkoutPlans.Domain.Relations.TrainingProgramWeek", b =>
                 {
                     b.Property<Guid>("TrainingProgramId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("WeekName")
                         .HasColumnType("text");
 
-                    b.HasKey("TrainingProgramId", "Name");
+                    b.HasKey("TrainingProgramId", "WeekName");
 
                     b.ToTable("TrainingProgramWeeks");
                 });
@@ -106,8 +79,14 @@ namespace WorkoutPlans.Migrations
                     b.Property<Guid>("ExerciseId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("SessionName")
                         .HasColumnType("text");
+
+                    b.Property<string>("WeekName")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("TrainingProgramId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Reps")
                         .HasColumnType("text");
@@ -118,22 +97,11 @@ namespace WorkoutPlans.Migrations
                     b.Property<string>("Sets")
                         .HasColumnType("text");
 
-                    b.HasKey("ExerciseId", "Name");
+                    b.HasKey("ExerciseId", "SessionName", "WeekName", "TrainingProgramId");
+
+                    b.HasIndex("TrainingProgramId", "WeekName");
 
                     b.ToTable("WorkoutSessionsForExercises");
-                });
-
-            modelBuilder.Entity("WorkoutPlans.Domain.Relations.SessionForWeek", b =>
-                {
-                    b.HasOne("WorkoutPlans.Domain.Relations.TrainingProgramWeek", "Week")
-                        .WithMany("Sessions")
-                        .HasForeignKey("WeekTrainingProgramId", "WeekName")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("WorkoutPlans.Domain.Relations.WorkoutSessionForExercise", "WorkoutSession")
-                        .WithMany("Weeks")
-                        .HasForeignKey("WorkoutSessionExerciseId", "WorkoutSessionName")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("WorkoutPlans.Domain.Relations.TrainingProgramWeek", b =>
@@ -152,6 +120,13 @@ namespace WorkoutPlans.Migrations
                         .WithMany("WorkoutSessions")
                         .HasForeignKey("ExerciseId")
                         .HasConstraintName("FK_ExerciseId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.HasOne("WorkoutPlans.Domain.Relations.TrainingProgramWeek", "TrainingProgramWeek")
+                        .WithMany("WorkoutSessions")
+                        .HasForeignKey("TrainingProgramId", "WeekName")
+                        .HasConstraintName("FK_TrainingProgramWeek")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
