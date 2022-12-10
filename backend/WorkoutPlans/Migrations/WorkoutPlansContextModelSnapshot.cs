@@ -118,7 +118,7 @@ namespace WorkoutPlans.Migrations
                         .WithMany("WorkoutSessions")
                         .HasForeignKey("ExerciseId")
                         .HasConstraintName("FK_ExerciseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.HasOne("WorkoutPlans.Domain.Relations.TrainingProgramWeek", "TrainingProgramWeek")
