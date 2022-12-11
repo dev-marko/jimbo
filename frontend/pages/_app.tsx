@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { ChakraProvider } from '@chakra-ui/react';
+import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import { ReactElement, ReactNode, useState } from 'react';
-import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import Head from 'next/head';
 
 import { AuthProvider } from '~providers/auth-provider';
 import theme from '~theme';
+
 import '../styles/globals.css';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -32,17 +34,24 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
   }));
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Hydrate state={pageProps.dedehydratedState}>
-        <ChakraProvider theme={theme}>
-          <AuthProvider>
-            {getLayout(
-              <Component {...pageProps} />,
-            )}
-          </AuthProvider>
-        </ChakraProvider>
-      </Hydrate>
-    </QueryClientProvider>
+    <>
+      <Head>
+        <title>jimbo - your local gym bro</title>
+        <link rel="icon" href="/jimbo.ico" />
+      </Head>
+      <QueryClientProvider client={queryClient}>
+        <Hydrate state={pageProps.dedehydratedState}>
+          <ChakraProvider theme={theme}>
+            <AuthProvider>
+              {getLayout(
+
+                <Component {...pageProps} />,
+              )}
+            </AuthProvider>
+          </ChakraProvider>
+        </Hydrate>
+      </QueryClientProvider>
+    </>
   );
 }
 

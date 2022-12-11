@@ -3,6 +3,7 @@ import { extendTheme, ThemeConfig, theme as base } from '@chakra-ui/react';
 const config: ThemeConfig = {
   initialColorMode: 'light',
   useSystemColorMode: true,
+  cssVarPrefix: 'jimbo',
 };
 
 const theme = extendTheme({
@@ -20,6 +21,18 @@ const theme = extendTheme({
   },
   components: {
     Input: {
+      variants: {
+        filled: {
+          field: {
+            _focus: {
+              borderColor: 'purple.500',
+              borderWidth: '2px',
+            },
+          },
+        },
+      },
+    },
+    NumberInput: {
       variants: {
         filled: {
           field: {

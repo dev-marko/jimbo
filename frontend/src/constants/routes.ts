@@ -19,4 +19,9 @@ export const routes = [
     path: '/forums',
     isProtected: true,
   },
+  {
+    name: 'Create Workout Plan',
+    path: '/workout-plans/create',
+    isProtected: true,
+  },
 ];
