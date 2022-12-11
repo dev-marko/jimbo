@@ -9,6 +9,7 @@ const WorkoutPlanCard = ({ id, name, description }: Props) => {
   return (
     <LinkBox as="article" w="full">
       <VStack
+        wordBreak="break-word"
         h="full"
         alignItems="stretch"
         w="full"
@@ -30,7 +31,7 @@ const WorkoutPlanCard = ({ id, name, description }: Props) => {
         <VStack alignItems="flex-start">
           <Link
             href={{
-              pathname: '/forums/[id]',
+              pathname: '/workout-plans/[id]',
               query: { id },
             }}
             passHref

@@ -1,8 +1,11 @@
 import { Button, FormControl, FormLabel, Heading, Input, Stack, Textarea, useDisclosure, VStack } from '@chakra-ui/react';
+import { useMutation } from '@tanstack/react-query';
 import { FormEvent, ReactElement, useState } from 'react';
 
 import AuthenticatedLayout from '~components/authenticated-layout';
 import CreateWorkoutPlanDrawer from '~components/create-workout-plan-drawer';
+import { WORKOUT_PLANS_API_URL } from '~constants/api';
+import fetcher from '~fetcher';
 import { Exercise } from '~types/workout-plans/exercise';
 
 const Create = () => {
@@ -11,6 +14,7 @@ const Create = () => {
   const [description, setDescription] = useState('');
   const [weekName, setWeekName] = useState('');
   const [sessionName, setSessionName] = useState('');
+  const [workoutId, setWorkoutId] = useState('');
   const [exercises, setExercises] = useState<Exercise[]>([
     {
       name: '',
@@ -20,26 +24,65 @@ const Create = () => {
     },
   ]);
 
+  const { mutate } = useMutation(
+    () => fetcher.post(`${WORKOUT_PLANS_API_URL}/TrainingProgram`, {
+      name,
+      description,
+    }),
+    {
+      onSuccess: ({ data }) => {
+        setWorkoutId(data.id);
+        onOpen();
+      },
+    },
+  );
+
+  const { mutate: mutateWorkoutSession } = useMutation(
+    () => fetcher.post(
+      `${WORKOUT_PLANS_API_URL}/TrainingProgram/week`,
+      {
+        TrainingProgramId: workoutId,
+        WeekName: weekName,
+        WorkoutSessions: [
+          ...exercises.map((exercise) => ({
+            SessionName: sessionName,
+            Reps: exercise.reps,
+            Sets: exercise.sets,
+            RestTime: exercise.restTime,
+            ExerciseId: exercise.id,
+            WeekName: weekName,
+            TrainingProgramId: workoutId,
+          })),
+        ],
+      },
+    ),
+    {
+      onSuccess: () => {
+        onClose();
+      },
+    },
+  );
+
   const onSubmitFirstForm = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (name && description) {
-      onOpen();
+      mutate();
     }
   };
 
-  const onSubmit = () => {
-    console.log('submit!!!');
+  const onSubmit = async () => {
+    mutateWorkoutSession();
   };
 
   return (
-    <VStack w="full" align="flex-start">
+    <VStack w="full" align={{ base: 'center', md: 'flex-start' }}>
       <Heading size="md">
         New workout plan
       </Heading>
       <form onSubmit={(event) => onSubmitFirstForm(event)}>
         <Stack spacing={6} mt={12}>
           <FormControl>
-            <FormLabel htmlFor="description">Description</FormLabel>
+            <FormLabel htmlFor="name">Name</FormLabel>
             <Input
               variant="filled"
               id="name"

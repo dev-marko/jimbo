@@ -32,6 +32,18 @@ const theme = extendTheme({
         },
       },
     },
+    NumberInput: {
+      variants: {
+        filled: {
+          field: {
+            _focus: {
+              borderColor: 'purple.500',
+              borderWidth: '2px',
+            },
+          },
+        },
+      },
+    },
   },
 });
 
