@@ -27,7 +27,7 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci -f
 
       - name: Add ENV variables
         run: echo SKIP_BUILD_STATIC_GENERATION=true >> .env
