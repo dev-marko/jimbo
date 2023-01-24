@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GemBox.Document;
+using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using WorkoutPlans.Domain.DTO;
+using WorkoutPlans.Domain.Relations;
 using WorkoutPlans.Services.Interfaces;
 
 namespace WorkoutPlans.Web.Controllers
@@ -16,6 +21,8 @@ namespace WorkoutPlans.Web.Controllers
         {
             this.trainingProgramService = trainingProgramService;
             this.exerciseService = exerciseService;
+
+            ComponentInfo.SetLicense("FREE-LIMITED-KEY");
         }
 
         [HttpGet]
@@ -108,7 +115,7 @@ namespace WorkoutPlans.Web.Controllers
             exerciseService.DeleteMultipleWorkoutSessions(trainingProgramWeekDTO.WorkoutSessions);
             trainingProgramService.UpdateTrainingProgramWeek(trainingProgramWeekDTO);
             exerciseService.CreateWorkoutSessionsForListOfExercises(trainingProgramWeekDTO.WorkoutSessions);
-
+             
             return Ok("test");
         }
 
@@ -117,6 +124,44 @@ namespace WorkoutPlans.Web.Controllers
         {
             // Don't forget to add OldWeekName to the DTO
             return Ok(trainingProgramService.DeleteTrainingProgramWeek(trainingProgramWeekDTO));
+        }
+
+        [HttpGet("{id}/download")]
+        public IActionResult DownloadTrainingProgram(Guid id)
+        {
+            var trainingProgram = trainingProgramService.FetchTrainingProgramById(id);
+            var weeks = trainingProgramService.FetchAllWeeksForTrainingProgram(id);
+
+            var templatePath = Path.Combine(Directory.GetCurrentDirectory(), "TrainingProgram.doc");
+            var document = DocumentModel.Load(templatePath);
+
+            document.Content.Replace("{{Name}}", trainingProgram.Name);
+            document.Content.Replace("{{Description}}", trainingProgram.Description);
+
+            StringBuilder sb = new StringBuilder();
+            StringBuilder final = new StringBuilder();
+
+            foreach (var week in weeks)
+            {
+                sb.AppendLine(week.WeekName);
+                foreach (var workout in week.WorkoutSessions)
+                {
+                    String temp = sb.ToString();
+                    if (!temp.Contains(workout.SessionName))
+                        sb.AppendLine($"    {workout.SessionName}:");
+                    sb.AppendLine($"        - {workout.Exercise.Name}: {workout.Sets} sets {workout.Reps} reps");
+                }
+                final.AppendLine(sb.ToString());
+                sb.Clear();
+            }
+
+            document.Content.Replace("{{Program}}", final.ToString());
+
+            var stream = new MemoryStream();
+
+            document.Save(stream, new PdfSaveOptions());
+
+            return File(stream.ToArray(), new PdfSaveOptions().ContentType, "Test.pdf");
         }
     }
 }

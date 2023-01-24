@@ -31,7 +31,8 @@ namespace WorkoutPlans.Repository.Implementations
         {
             return trainingProgramWeeks
                 .Where(e => e.TrainingProgramId == trainingProgramId)
-                .Include(e => e.WorkoutSessions);
+                .Include(e => e.WorkoutSessions)
+                .Include("WorkoutSessions.Exercise");
         }
 
         public TrainingProgramWeek FetchTrainingProgramWeek(Guid trainingProgramId, string weekName)
