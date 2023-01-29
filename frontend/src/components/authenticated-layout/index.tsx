@@ -1,6 +1,9 @@
 import { Box, Container, VStack } from '@chakra-ui/react';
+import dynamic from 'next/dynamic';
 
-import Header from './header';
+const Header = dynamic(() => import('./header'), {
+  ssr: false,
+});
 
 type Props = {
   children: React.ReactNode;

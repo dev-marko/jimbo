@@ -52,16 +52,17 @@ const Header = () => {
               >
                 <Avatar
                   size="sm"
+                  name={user ?? ''}
                 />
               </Box>
             </PopoverTrigger>
-            <PopoverContent>
+            <PopoverContent width={52}>
               <PopoverArrow />
               <PopoverBody px={0} py={2}>
                 <VStack align="start">
                   <HStack spacing={4} p={4}>
-                    <Avatar size="sm" />
-                    <Heading suppressHydrationWarning size="sm" fontWeight="semibold">{user}</Heading>
+                    <Avatar size="sm" name={user ?? ''} />
+                    <Heading size="sm" fontWeight="semibold">{user}</Heading>
                   </HStack>
                   <Divider borderWidth="1px" />
                   <Button variant="ghost" aria-label="Logout button" leftIcon={<Icon as={MdLogout} />} onClick={signOut}>Sign out</Button>
