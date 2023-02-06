@@ -31,7 +31,7 @@ const WorkoutPlans = () => {
   }
 
   return (
-    <VStack align="start" w="full" spacing={4}>
+    <VStack align="start" w="full" spacing={4} mb={8}>
       <HStack mb={10} w="full" justify="space-between">
         <Heading textDecor="underline" textUnderlineOffset={10} size="md">workout plans</Heading>
         <HStack>
@@ -40,7 +40,7 @@ const WorkoutPlans = () => {
       </HStack>
       <SimpleGrid columns={3} spacing={10}>
         {
-          workoutPlans.map((plan: WorkoutPlan) => (
+          workoutPlans.reverse().map((plan: WorkoutPlan) => (
             <WorkoutPlanCard key={plan.id} {...plan} />
           ))
         }

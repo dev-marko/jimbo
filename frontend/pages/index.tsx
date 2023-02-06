@@ -85,12 +85,12 @@ const Home: NextPageWithLayout = () => {
           </Box>
           <Box>
             <VStack>
-
-              {
-                mostRecentForums.slice(0, 3).map((forum: Forum) => (
-                  <ForumCard key={forum.id} {...forum} />
-                ))
-              }
+              {mostRecentForums.slice(
+                mostRecentForums.length - 3,
+                mostRecentForums.length,
+              ).map((forum: Forum) => (
+                <ForumCard key={forum.id} {...forum} />
+              ))}
             </VStack>
           </Box>
         </Box>
@@ -123,7 +123,10 @@ const Home: NextPageWithLayout = () => {
 
           <Box>
             <VStack>
-              {mostRecentWorkoutPlans.slice(0, 3).map((plan: WorkoutPlan) => (
+              {mostRecentWorkoutPlans.slice(
+                mostRecentWorkoutPlans.length - 3,
+                mostRecentWorkoutPlans.length,
+              ).map((plan: WorkoutPlan) => (
                 <WorkoutPlanCard key={plan.id} {...plan} />
               ))}
             </VStack>
