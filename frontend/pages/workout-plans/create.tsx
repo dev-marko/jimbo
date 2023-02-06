@@ -1,5 +1,6 @@
 import { Button, FormControl, FormLabel, Heading, Input, Stack, Textarea, useDisclosure, VStack } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
 import { FormEvent, ReactElement, useState } from 'react';
 
 import AuthenticatedLayout from '~components/authenticated-layout';
@@ -24,6 +25,7 @@ const Create = () => {
     },
   ]);
 
+  const { push } = useRouter();
   const { mutate } = useMutation(
     () => fetcher.post(`${WORKOUT_PLANS_API_URL}/TrainingProgram`, {
       name,
@@ -59,6 +61,7 @@ const Create = () => {
     {
       onSuccess: () => {
         onClose();
+        push('/workout-plans');
       },
     },
   );

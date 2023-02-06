@@ -59,7 +59,7 @@ const Header = () => {
             <PopoverContent width={52}>
               <PopoverArrow />
               <PopoverBody px={0} py={2}>
-                <VStack align="start">
+                <VStack align="start" px={2}>
                   <HStack spacing={4} p={4}>
                     <Avatar size="sm" name={user ?? ''} />
                     <Heading size="sm" fontWeight="semibold">{user}</Heading>
